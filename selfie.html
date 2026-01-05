@@ -3,400 +3,595 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>肩に乗る（自撮り）｜かなたけちゃん</title>
+  <meta name="format-detection" content="telephone=no,email=no,address=no" />
+
+  <title>Kanatake Cam（Selfie）｜おにぎり屋かなたけ</title>
+  <meta name="description" content="かなたけちゃんを合成して自撮り。位置・サイズを自由に調整して撮影できます。" />
+
+  <!-- OGP（必要なら差し替え） -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="おにぎり屋かなたけ" />
+  <meta property="og:title" content="Kanatake Cam（Selfie）" />
+  <meta property="og:description" content="かなたけちゃんを合成して自撮り。位置・サイズを自由に調整して撮影できます。" />
+  <meta property="og:url" content="https://kimura-jane.github.io/kanatake-ar/selfie.html" />
+  <meta property="og:image" content="https://kimura-jane.github.io/kanatake-ar/ogp_kanatake_1200x630.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <style>
     :root{
-      --bg:#fbfaf7;
-      --ink:#1f2328;
-      --sub:rgba(31,35,40,.72);
-      --line:rgba(31,35,40,.12);
-      --card:rgba(255,255,255,.90);
-      --shadow:0 16px 40px rgba(31,35,40,.10);
-      --ume:#e94b5a;
-      --radius:20px;
+      --bg:#0b0d12;
+      --panel: rgba(255,255,255,.10);
+      --line: rgba(255,255,255,.16);
+      --text:#f3f5f7;
+      --muted: rgba(243,245,247,.72);
+      --accent:#ff5a77;
+      --accent2:#3b82f6;
+      --radius: 18px;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;
-      color:var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", Roboto, Arial;
+      color: var(--text);
       background:
-        radial-gradient(12px 12px at 18px 18px, rgba(31,35,40,.035) 0 3px, transparent 3px),
-        radial-gradient(12px 12px at 44px 54px, rgba(31,35,40,.030) 0 3px, transparent 3px),
-        radial-gradient(900px 420px at 15% 0%, rgba(233,75,90,.10), transparent 60%),
-        radial-gradient(900px 420px at 90% 10%, rgba(43,179,166,.08), transparent 55%),
-        var(--bg);
-      background-size:72px 72px,72px 72px,auto,auto,auto;
-      min-height:100vh;
+        radial-gradient(900px 420px at 20% 10%, rgba(255,90,119,.22), transparent 60%),
+        radial-gradient(900px 420px at 85% 15%, rgba(59,130,246,.18), transparent 55%),
+        linear-gradient(180deg, #0b0d12, #07090d);
     }
-
-    .wrap{max-width:920px;margin:0 auto;padding:18px 14px 22px}
-    h1{margin:0 0 6px;font-size:18px}
-    .sub{margin:0 0 12px;color:var(--sub);font-size:13.2px;line-height:1.8}
-
-    .panel{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      overflow:hidden;
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 14px 26px;
     }
-
-    .stage{
-      position:relative;
-      width:100%;
-      aspect-ratio: 3 / 4;
-      background:#000;
-    }
-    @media (min-width: 920px){
-      .stage{ aspect-ratio: 16 / 9; }
-    }
-
-    video{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      transform: scaleX(-1);
-    }
-    video.no-mirror{ transform:none; }
-
-    .overlay{
-      position:absolute;
-      left:50%;
-      top:60%;
-      width: 240px;
-      height:auto;
-      transform: translate(-50%,-50%);
-      touch-action:none;
-      user-select:none;
-      -webkit-user-drag:none;
-      filter: drop-shadow(0 10px 14px rgba(0,0,0,.35));
-    }
-
-    .hud{
+    .bar{
       display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      padding:12px;
-      border-top:1px solid var(--line);
       align-items:center;
       justify-content:space-between;
+      gap:12px;
+      padding: 12px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+    }
+    .bar .title{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .badge{
+      width:34px;height:34px;border-radius:12px;
+      display:grid;place-items:center;
+      background: rgba(255,255,255,.10);
+      border: 1px solid var(--line);
+    }
+    .bar a{
+      color: var(--text);
+      text-decoration:none;
+      border-bottom: 1px dotted rgba(255,255,255,.35);
+      font-size: 13px;
+      opacity:.92;
     }
 
-    .left, .right{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .help{
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      border-radius: var(--radius);
+      padding: 12px 12px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 13px;
+    }
+    .help b{color:var(--text)}
+    .stage{
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      border-radius: var(--radius);
+      overflow:hidden;
+      position: relative;
+      aspect-ratio: 9 / 16;
+      min-height: 520px;
+    }
+    @media(min-width: 780px){
+      .stage{ aspect-ratio: 16 / 9; min-height: 520px; }
+    }
 
+    video, canvas, .overlayLayer{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+    }
+    video{
+      object-fit: cover;
+      transform: scaleX(-1); /* 自撮りミラー表示 */
+      background:#000;
+    }
+    .overlayLayer{
+      pointer-events:none;
+    }
+    .overlayImg{
+      position:absolute;
+      left:50%; top:55%;
+      transform: translate(-50%,-50%);
+      width: 42%;
+      max-width: 520px;
+      touch-action: none;
+      user-select:none;
+      pointer-events:auto;
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,.35));
+    }
+    .tapHint{
+      position:absolute;
+      left: 14px; right: 14px; top: 14px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.92);
+      font-size: 13px;
+      line-height: 1.55;
+      backdrop-filter: blur(8px);
+    }
+    .tapHint .dot{
+      display:inline-block;
+      width:8px;height:8px;border-radius:99px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(255,90,119,.18);
+      margin-right:8px;
+      vertical-align:middle;
+    }
+
+    .controls{
+      margin-top: 12px;
+      display:grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media(min-width: 780px){
+      .controls{ grid-template-columns: 1.3fr 1.3fr 1fr 1fr; }
+    }
     button{
       appearance:none;
-      border:1px solid rgba(31,35,40,.14);
-      background: rgba(255,255,255,.84);
-      color: rgba(31,35,40,.90);
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
       border-radius: 14px;
-      padding: 11px 12px;
-      font-size: 13.2px;
-      font-weight: 800;
+      padding: 12px 12px;
+      font-weight: 700;
+      letter-spacing:.01em;
+      cursor:pointer;
     }
-    button:active{ transform: scale(.99); }
-
-    .primary{
-      border-color: rgba(233,75,90,.28);
-      background: linear-gradient(135deg, rgba(233,75,90,.96), rgba(233,75,90,.86));
-      color:#fff;
-      box-shadow: 0 14px 26px rgba(233,75,90,.18);
+    button.primary{
+      background: linear-gradient(180deg, rgba(255,90,119,.95), rgba(255,90,119,.70));
+      border-color: rgba(255,90,119,.55);
     }
-
-    .hint{
-      padding: 10px 12px 14px;
-      color: rgba(31,35,40,.70);
-      font-size: 12.4px;
-      line-height: 1.8;
+    button.secondary{
+      background: linear-gradient(180deg, rgba(59,130,246,.95), rgba(59,130,246,.65));
+      border-color: rgba(59,130,246,.55);
+    }
+    button:disabled{
+      opacity:.45;
+      cursor:not-allowed;
     }
 
-    .toast{
-      position:fixed;
-      left:50%;
-      bottom:16px;
-      transform:translateX(-50%);
-      background: rgba(31,35,40,.88);
-      color:#fff;
-      padding:10px 12px;
-      border-radius: 999px;
-      font-size: 12.5px;
-      opacity:0;
-      pointer-events:none;
-      transition: opacity .2s ease;
-    }
-    .toast.show{ opacity:1; }
-
-    a.back{
-      margin-top: 12px;
-      display:inline-block;
-      text-decoration:none;
-      color: rgba(31,35,40,.80);
-      border: 1px solid rgba(31,35,40,.14);
-      background: rgba(255,255,255,.70);
+    .sizeRow{
+      margin-top: 10px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      border-radius: 14px;
       padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 13px;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    input[type="range"]{
+      width: 100%;
+    }
+
+    .result{
+      margin-top: 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      border-radius: var(--radius);
+      padding: 12px 12px;
+      display:none;
+    }
+    .result img{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      display:block;
+    }
+    .result .row{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 10px;
+    }
+    .small{
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+      margin-top: 8px;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>肩に乗る（自撮り）</h1>
-    <p class="sub">
-      画像を<strong>ドラッグ</strong>で移動、<strong>ピンチ</strong>で拡大縮小できます。位置が決まったら「撮影」を押してください。
-    </p>
-
-    <div class="panel">
-      <div class="stage" id="stage">
-        <video id="video" autoplay playsinline muted></video>
-        <img id="overlay" class="overlay" alt="かなたけちゃん">
+  <main class="wrap">
+    <div class="bar">
+      <div class="title">
+        <div class="badge" aria-hidden="true">📸</div>
+        <div>Kanatake Cam（Selfie）</div>
       </div>
-
-      <div class="hud">
-        <div class="left">
-          <button id="switchBtn" type="button">カメラ切替</button>
-          <button id="resetBtn" type="button">位置リセット</button>
-        </div>
-        <div class="right">
-          <button id="shotBtn" class="primary" type="button">撮影</button>
-        </div>
-      </div>
-
-      <div class="hint">
-        ※保存がうまくいかない場合は、撮影後に表示された画像を長押しして保存してください。<br>
-        ※周囲のお客さまが写り込まないようご配慮ください。
-      </div>
+      <a href="./index.html">トップへ戻る</a>
     </div>
 
-    <a class="back" href="./">← トップへ戻る</a>
-  </div>
+    <div class="help">
+      <b>使い方：</b>画面上の「かなたけちゃん」を<b>指で移動</b>できます。<b>ピンチで拡大・縮小</b>（うまくいかない場合は下のスライダーでも調整できます）。<br>
+      <b>顔出しNGの方へ：</b>撮影後、スタンプ・モザイク・トリミング等で編集してからSNSに投稿していただいて大丈夫です。
+    </div>
 
-  <div class="toast" id="toast">準備中…</div>
-  <canvas id="canvas" style="display:none"></canvas>
+    <section class="stage" aria-label="撮影画面">
+      <video id="video" playsinline muted></video>
+
+      <div class="tapHint" id="hint">
+        <span class="dot" aria-hidden="true"></span>
+        かなたけちゃんを動かして、位置とサイズを調整してから「撮影」を押してください。
+      </div>
+
+      <!-- オーバーレイ（ドラッグ対象） -->
+      <img id="overlay" class="overlayImg" src="./kanatake.png" alt="かなたけちゃん" />
+
+      <!-- 撮影用キャンバス（通常は非表示） -->
+      <canvas id="canvas" style="display:none;"></canvas>
+    </section>
+
+    <div class="controls" aria-label="操作">
+      <button class="secondary" id="btnSwitch">カメラ切替</button>
+      <button id="btnReset">位置をリセット</button>
+      <button class="primary" id="btnShot">撮影</button>
+      <button id="btnShare" disabled>共有 / 保存</button>
+    </div>
+
+    <div class="sizeRow" aria-label="サイズ調整">
+      サイズ調整
+      <input id="size" type="range" min="0.20" max="1.40" step="0.01" value="1.00" />
+    </div>
+
+    <section class="result" id="result" aria-label="撮影結果">
+      <img id="resultImg" alt="撮影結果" />
+      <div class="row">
+        <button id="btnDownload">画像を保存</button>
+        <button class="secondary" id="btnShare2">共有（SNSへ）</button>
+        <button id="btnRetake">撮り直す</button>
+      </div>
+      <div class="small">
+        ※周囲のお客さまが写り込まないようご配慮ください。<br>
+        ※SNSアプリ内ブラウザで不安定な場合は Safari / Chrome で開き直すと安定します。
+      </div>
+    </section>
+  </main>
 
   <script>
-    // ★ここだけ：ファイル名を合わせる
-    // リネームできたなら 'kanatake.png'
-    // リネームできてないなら 'kanatake.png.png'
-    const IMG_FILE = 'kanatake.png';
+    // ===== 設定（ファイル名）=====
+    const OVERLAY_SRC = './kanatake.png';
 
+    // ===== DOM =====
     const video = document.getElementById('video');
     const overlay = document.getElementById('overlay');
     const canvas = document.getElementById('canvas');
-    const toast = document.getElementById('toast');
+    const sizeSlider = document.getElementById('size');
 
-    const switchBtn = document.getElementById('switchBtn');
-    const resetBtn  = document.getElementById('resetBtn');
-    const shotBtn   = document.getElementById('shotBtn');
+    const btnSwitch = document.getElementById('btnSwitch');
+    const btnReset  = document.getElementById('btnReset');
+    const btnShot   = document.getElementById('btnShot');
+    const btnShare  = document.getElementById('btnShare');
 
-    overlay.src = './' + IMG_FILE;
+    const resultBox = document.getElementById('result');
+    const resultImg = document.getElementById('resultImg');
+    const btnDownload = document.getElementById('btnDownload');
+    const btnShare2   = document.getElementById('btnShare2');
+    const btnRetake   = document.getElementById('btnRetake');
 
-    let facingMode = 'user';
+    // ===== 状態 =====
     let stream = null;
+    let facingMode = 'user'; // 'user' or 'environment'
 
-    function showToast(msg){
-      toast.textContent = msg;
-      toast.classList.add('show');
-      clearTimeout(showToast._t);
-      showToast._t = setTimeout(()=>toast.classList.remove('show'), 1600);
+    // オーバーレイの位置・サイズ（比率ベース）
+    let state = {
+      x: 0.50,   // 0..1 (center)
+      y: 0.55,   // 0..1 (center)
+      s: 1.00    // scale
+    };
+
+    // ドラッグ / ピンチ
+    let dragging = false;
+    let startPointer = null;  // {x,y}
+    let startState = null;
+
+    let pinch = {
+      active: false,
+      id1: null, id2: null,
+      startDist: 0,
+      startScale: 1
+    };
+
+    // ===== ユーティリティ =====
+    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+
+    function applyOverlay(){
+      const stage = overlay.parentElement; // .stage
+      const rect = stage.getBoundingClientRect();
+      const px = rect.width  * state.x;
+      const py = rect.height * state.y;
+
+      overlay.style.left = px + 'px';
+      overlay.style.top  = py + 'px';
+
+      // ベース幅は画面幅の 42%（CSS）なので、transform scaleで調整
+      overlay.style.transform = `translate(-50%,-50%) scale(${state.s})`;
+      sizeSlider.value = state.s.toFixed(2);
+    }
+
+    function resetOverlay(){
+      state.x = 0.50;
+      state.y = 0.55;
+      state.s = 1.00;
+      applyOverlay();
     }
 
     async function startCamera(){
-      try{
-        if(stream){
-          stream.getTracks().forEach(t=>t.stop());
-          stream = null;
-        }
-        showToast('カメラを起動しています…');
-
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode },
-          audio: false
-        });
-
-        video.srcObject = stream;
-
-        if(facingMode === 'user'){
-          video.classList.remove('no-mirror');
-        }else{
-          video.classList.add('no-mirror');
-        }
-
-        showToast('準備できました');
-      }catch(e){
-        console.error(e);
-        showToast('カメラを許可してください');
-        alert('カメラの許可が必要です。ブラウザの設定でカメラを許可してからお試しください。');
+      if(stream){
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
       }
+      const constraints = {
+        audio: false,
+        video: {
+          facingMode: { ideal: facingMode },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = stream;
+      await video.play();
     }
 
-    // ---- Overlay transform (drag + pinch) ----
-    let state = { x:0, y:0, scale:1 };
-    function applyTransform(){
-      overlay.style.transform = `translate(-50%,-50%) translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
-    }
-    function resetOverlay(){
-      state.x = 0; state.y = 0; state.scale = 1;
-      applyTransform();
-      showToast('リセットしました');
+    function supportsShareFiles(){
+      return !!(navigator.canShare && navigator.canShare({ files: [new File(["a"],"a.png",{type:"image/png"})] }));
     }
 
-    const pointers = new Map();
-    function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
-    function mid(a,b){ return { x:(a.x+b.x)/2, y:(a.y+b.y)/2 }; }
+    async function canvasToBlob(type='image/png', quality=0.92){
+      return new Promise(resolve => canvas.toBlob(resolve, type, quality));
+    }
 
-    let pinchStartDist = 0;
-    let pinchStartScale = 1;
-    let pinchStartMid = null;
-    let dragStart = null;
+    // ===== オーバーレイ画像設定 =====
+    overlay.src = OVERLAY_SRC;
+    overlay.draggable = false;
 
-    overlay.addEventListener('pointerdown', (ev)=>{
-      overlay.setPointerCapture(ev.pointerId);
-      pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
-
-      if(pointers.size === 1){
-        dragStart = { x: ev.clientX, y: ev.clientY, ox: state.x, oy: state.y };
-      }else if(pointers.size === 2){
-        const pts = [...pointers.values()];
-        pinchStartDist = dist(pts[0], pts[1]);
-        pinchStartScale = state.scale;
-        pinchStartMid = mid(pts[0], pts[1]);
-      }
+    // ===== 操作（ポインタ）=====
+    overlay.addEventListener('pointerdown', (e) => {
+      overlay.setPointerCapture(e.pointerId);
+      dragging = true;
+      startPointer = { x: e.clientX, y: e.clientY };
+      startState = { ...state };
     });
 
-    overlay.addEventListener('pointermove', (ev)=>{
-      if(!pointers.has(ev.pointerId)) return;
-      pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+    overlay.addEventListener('pointermove', (e) => {
+      if(!dragging) return;
 
-      if(pointers.size === 1 && dragStart){
-        const p = [...pointers.values()][0];
-        state.x = dragStart.ox + (p.x - dragStart.x);
-        state.y = dragStart.oy + (p.y - dragStart.y);
-        applyTransform();
-      }else if(pointers.size === 2){
-        const pts = [...pointers.values()];
-        const d = dist(pts[0], pts[1]);
-        const m = mid(pts[0], pts[1]);
-
-        const s = pinchStartScale * (d / pinchStartDist);
-        state.scale = Math.max(0.35, Math.min(2.8, s));
-
-        if(pinchStartMid){
-          state.x += (m.x - pinchStartMid.x);
-          state.y += (m.y - pinchStartMid.y);
-          pinchStartMid = m;
-        }
-        applyTransform();
-      }
-    });
-
-    function endPointer(ev){
-      pointers.delete(ev.pointerId);
-      if(pointers.size < 2) pinchStartMid = null;
-      if(pointers.size === 0) dragStart = null;
-      if(pointers.size === 1){
-        const p = [...pointers.values()][0];
-        dragStart = { x: p.x, y: p.y, ox: state.x, oy: state.y };
-      }
-    }
-    overlay.addEventListener('pointerup', endPointer);
-    overlay.addEventListener('pointercancel', endPointer);
-    overlay.addEventListener('lostpointercapture', endPointer);
-
-    // ---- Capture ----
-    function drawCover(ctx, img, dx, dy, dw, dh){
-      const iw = img.videoWidth || img.width;
-      const ih = img.videoHeight || img.height;
-      const ir = iw / ih;
-      const dr = dw / dh;
-      let sw, sh, sx, sy;
-      if(ir > dr){
-        sh = ih; sw = ih * dr; sx = (iw - sw) / 2; sy = 0;
-      }else{
-        sw = iw; sh = iw / dr; sx = 0; sy = (ih - sh) / 2;
-      }
-      ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
-    }
-
-    shotBtn.addEventListener('click', async ()=>{
-      if(!video.videoWidth){
-        showToast('カメラ準備中です');
-        return;
-      }
-
-      const stage = document.getElementById('stage');
+      const stage = overlay.parentElement;
       const rect = stage.getBoundingClientRect();
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const dx = (e.clientX - startPointer.x) / rect.width;
+      const dy = (e.clientY - startPointer.y) / rect.height;
 
-      canvas.width  = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
+      state.x = clamp(startState.x + dx, 0.05, 0.95);
+      state.y = clamp(startState.y + dy, 0.05, 0.95);
+      applyOverlay();
+    });
+
+    overlay.addEventListener('pointerup', () => { dragging = false; });
+    overlay.addEventListener('pointercancel', () => { dragging = false; });
+
+    // ===== ピンチ（タッチ2本）=====
+    const stageEl = document.querySelector('.stage');
+
+    stageEl.addEventListener('touchstart', (e) => {
+      if(e.touches.length === 2){
+        pinch.active = true;
+        pinch.id1 = e.touches[0].identifier;
+        pinch.id2 = e.touches[1].identifier;
+
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinch.startDist = Math.hypot(dx, dy);
+        pinch.startScale = state.s;
+      }
+    }, { passive: true });
+
+    stageEl.addEventListener('touchmove', (e) => {
+      if(!pinch.active || e.touches.length < 2) return;
+
+      // 現在の2点を探す
+      let t1=null, t2=null;
+      for(const t of e.touches){
+        if(t.identifier === pinch.id1) t1=t;
+        if(t.identifier === pinch.id2) t2=t;
+      }
+      if(!t1 || !t2) return;
+
+      const dx = t1.clientX - t2.clientX;
+      const dy = t1.clientY - t2.clientY;
+      const dist = Math.hypot(dx, dy);
+      const ratio = dist / pinch.startDist;
+
+      state.s = clamp(pinch.startScale * ratio, 0.20, 1.40);
+      applyOverlay();
+    }, { passive: true });
+
+    stageEl.addEventListener('touchend', (e) => {
+      if(e.touches.length < 2){
+        pinch.active = false;
+      }
+    }, { passive: true });
+
+    // ===== スライダー =====
+    sizeSlider.addEventListener('input', () => {
+      state.s = clamp(parseFloat(sizeSlider.value), 0.20, 1.40);
+      applyOverlay();
+    });
+
+    // ===== 撮影 =====
+    btnShot.addEventListener('click', async () => {
+      // 解像度：動画の実寸に合わせる
+      const vw = video.videoWidth || 1280;
+      const vh = video.videoHeight || 720;
+
+      canvas.width = vw;
+      canvas.height = vh;
 
       const ctx = canvas.getContext('2d');
 
-      // video (mirror for user cam)
+      // 自撮りミラーを「撮影結果」も一致させる（ミラーのままにする）
+      // ミラー不要ならこのブロックを削除し、drawImage(video,0,0,...)だけにしてください
       ctx.save();
-      if(facingMode === 'user'){
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-      }
-      drawCover(ctx, video, 0, 0, canvas.width, canvas.height);
+      ctx.translate(vw, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(video, 0, 0, vw, vh);
       ctx.restore();
 
-      // overlay
-      const orect = overlay.getBoundingClientRect();
-      const srect = stage.getBoundingClientRect();
+      // オーバーレイの描画（ステージ比率→動画解像度に変換）
+      const stageRect = stageEl.getBoundingClientRect();
 
-      const ox = (orect.left - srect.left) * dpr;
-      const oy = (orect.top  - srect.top ) * dpr;
-      const ow = orect.width * dpr;
-      const oh = orect.height * dpr;
+      // overlay の現在サイズ（CSSベース幅×scale）
+      const overlayRect = overlay.getBoundingClientRect();
 
-      await overlay.decode?.().catch(()=>{});
-      ctx.drawImage(overlay, ox, oy, ow, oh);
+      // 画面上の overlayRect を stageRect 内の相対に変換
+      const ox = (overlayRect.left - stageRect.left) / stageRect.width;
+      const oy = (overlayRect.top  - stageRect.top ) / stageRect.height;
+      const ow = overlayRect.width / stageRect.width;
+      const oh = overlayRect.height/ stageRect.height;
 
-      const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 1.0));
-      if(!blob){
-        showToast('撮影に失敗しました');
-        return;
+      // 動画座標へ
+      const dx = ox * vw;
+      const dy = oy * vh;
+      const dw = ow * vw;
+      const dh = oh * vh;
+
+      // 画像ロード完了待ち
+      if(!overlay.complete){
+        await new Promise(r => overlay.addEventListener('load', r, { once:true }));
       }
+      ctx.drawImage(overlay, dx, dy, dw, dh);
 
-      const file = new File([blob], 'kanatake_selfie.png', { type: 'image/png' });
-
-      if(navigator.canShare && navigator.canShare({ files: [file] })){
-        try{
-          await navigator.share({ files: [file], title: 'かなたけちゃんAR' });
-          showToast('共有を開きました');
-          return;
-        }catch(e){}
-      }
-
+      // プレビュー表示
+      const blob = await canvasToBlob('image/png');
       const url = URL.createObjectURL(blob);
+      resultImg.src = url;
+
+      resultBox.style.display = 'block';
+      btnShare.disabled = false;
+
+      // stage から離れたら結果が見える位置へ
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // 共有ボタンにデータを保持
+      btnShare.dataset.blobUrl = url;
+    });
+
+    // ===== 共有 / 保存 =====
+    async function getShotBlob(){
+      const blob = await canvasToBlob('image/png');
+      return blob;
+    }
+
+    btnShare.addEventListener('click', async () => {
+      // ここは「撮影後に使う」想定
+      try{
+        const blob = await getShotBlob();
+        const file = new File([blob], 'kanatake-selfie.png', { type: 'image/png' });
+
+        if(navigator.share && supportsShareFiles()){
+          await navigator.share({
+            title: 'Kanatake Cam（Selfie）',
+            text: 'かなたけちゃんと一緒に撮ろう。',
+            files: [file]
+          });
+        }else{
+          // 共有が無理なら保存案内
+          downloadBlob(blob, 'kanatake-selfie.png');
+        }
+      }catch(err){
+        // ユーザーキャンセル等は無視
+      }
+    });
+
+    function downloadBlob(blob, filename){
       const a = document.createElement('a');
-      a.href = url;
-      a.download = 'kanatake_selfie.png';
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+    }
 
-      window.open(url, '_blank', 'noopener,noreferrer');
-      showToast('画像を保存してください');
-      setTimeout(()=>URL.revokeObjectURL(url), 8000);
+    btnDownload.addEventListener('click', async () => {
+      const blob = await getShotBlob();
+      downloadBlob(blob, 'kanatake-selfie.png');
     });
 
-    switchBtn.addEventListener('click', async ()=>{
+    btnShare2.addEventListener('click', async () => {
+      try{
+        const blob = await getShotBlob();
+        const file = new File([blob], 'kanatake-selfie.png', { type: 'image/png' });
+
+        if(navigator.share && supportsShareFiles()){
+          await navigator.share({
+            title: 'Kanatake Cam（Selfie）',
+            text: 'かなたけちゃんと一緒に撮ろう。',
+            files: [file]
+          });
+        }else{
+          downloadBlob(blob, 'kanatake-selfie.png');
+        }
+      }catch(err){}
+    });
+
+    btnRetake.addEventListener('click', () => {
+      resultBox.style.display = 'none';
+      // 結果画像URL解放
+      if(resultImg.src.startsWith('blob:')){
+        URL.revokeObjectURL(resultImg.src);
+      }
+      resultImg.src = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===== カメラ切替 / リセット =====
+    btnSwitch.addEventListener('click', async () => {
       facingMode = (facingMode === 'user') ? 'environment' : 'user';
       await startCamera();
-      showToast(facingMode === 'user' ? '前カメラ' : '後ろカメラ');
     });
-    resetBtn.addEventListener('click', resetOverlay);
 
-    resetOverlay();
-    startCamera();
+    btnReset.addEventListener('click', () => resetOverlay());
+
+    // ===== 起動 =====
+    (async () => {
+      try{
+        applyOverlay();
+        await startCamera();
+      }catch(e){
+        alert('カメラを起動できませんでした。ブラウザの権限設定をご確認ください。');
+      }
+    })();
+
+    // 画面サイズ変更時に位置補正
+    window.addEventListener('resize', () => applyOverlay());
   </script>
 </body>
 </html>
