@@ -4,18 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>iPhoneで置くAR</title>
+  <style>
+    body{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;margin:24px;line-height:1.6}
+    a.btn{display:inline-block;padding:14px 16px;border:1px solid #111;border-radius:12px;text-decoration:none;color:#111}
+    .note{color:#555;font-size:13px;margin-top:12px}
+  </style>
 </head>
-<body style="font-family:system-ui;margin:24px">
+<body>
   <h1>iPhoneで置くAR</h1>
-  <p>下のボタンを押すとAR表示が開く。</p>
+  <p>下のボタンを押すとARが開く。</p>
 
-  <!-- iOS Quick Look -->
-  <a rel="ar" href="./assets/model.usdz" style="display:inline-block;padding:14px 16px;border:1px solid #111;border-radius:12px;text-decoration:none;color:#111">
+  <a class="btn" rel="ar" href="./onigiri.usdz">
     ARで表示する（USDZ）
   </a>
 
-  <p style="color:#555;font-size:13px;margin-top:12px">
-    うまくいかない時は明るい場所で、机の上を映してから試して。
+  <p class="note">
+    うまくいかない時：明るい場所で机の上を映してから試して。
   </p>
 </body>
 </html>
