@@ -1,2 +1,8 @@
-/*.usdz
+/onigiri.usdz
   Content-Type: model/vnd.usdz+zip
+
+/onigiri.glb
+  Content-Type: model/gltf-binary
+
+/kanatake.png
+  Content-Type: image/png
