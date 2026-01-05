@@ -1,1 +1,29 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Androidで置くAR</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body{font-family:system-ui;margin:0}
+    model-viewer{width:100vw;height:100vh;background:#f7f7f7}
+    .hint{position:fixed;left:12px;right:12px;bottom:12px;background:#fff;border:1px solid #ddd;border-radius:12px;padding:10px;font-size:13px}
+  </style>
+</head>
+<body>
+  <model-viewer
+    src="./onigiri_plane.gltf"
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    ar-scale="fixed"
+    camera-controls
+    shadow-intensity="0.3"
+    alt="おにぎりキャラ"
+  ></model-viewer>
 
+  <div class="hint">
+    AR対応なら「AR」ボタンが出る。出ない端末でも3D表示は動く。
+  </div>
+</body>
+</html>
