@@ -2,37 +2,123 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>iPhoneで置くAR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>iPhoneで置くAR｜おにぎり屋かなたけ</title>
+
   <style>
-    body{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;margin:24px;line-height:1.6}
-    .card{max-width:520px}
+    :root{
+      --bg1:#070a10;
+      --bg2:#0b0f17;
+      --line:rgba(255,255,255,.16);
+      --text:rgba(255,255,255,.92);
+      --sub:rgba(255,255,255,.66);
+      --accent:#ff375f;
+      --radius:18px;
+      --shadow:0 14px 40px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1100px 720px at 12% 0%, rgba(255,55,95,.22), transparent 60%),
+        radial-gradient(1100px 720px at 88% 10%, rgba(0,194,255,.12), transparent 55%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
+      min-height:100vh;
+    }
+    .wrap{max-width:520px;margin:0 auto;padding:22px 16px 26px}
+    h1{margin:0 0 10px;font-size:20px}
+    .sub{margin:0 0 14px;color:var(--sub);font-size:13.5px;line-height:1.8}
+
+    .card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
     a.ar{
       display:block;
-      border:2px solid #111;
-      border-radius:16px;
-      padding:14px;
       text-decoration:none;
-      color:#111;
+      color:var(--text);
+      padding:14px;
+      position:relative;
     }
-    a.ar img{width:100%;height:auto;display:block;border-radius:12px}
-    .label{margin-top:10px;font-weight:700}
-    .note{color:#555;font-size:13px;margin-top:10px}
+    a.ar img{
+      width:100%;
+      height:auto;
+      display:block;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+    }
+
+    /* ここをタップ（強調） */
+    .tap{
+      position:absolute;
+      left:14px;
+      right:14px;
+      bottom:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(255,55,95,.92);
+      color:#111;
+      font-weight:900;
+      letter-spacing:.02em;
+      box-shadow:0 10px 26px rgba(0,0,0,.35);
+    }
+    .tap span{
+      display:inline-block;
+      padding:2px 10px;
+      border-radius:999px;
+      background:rgba(0,0,0,.10);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .note{
+      margin-top:12px;
+      color:rgba(255,255,255,.62);
+      font-size:12.5px;
+      line-height:1.8;
+    }
+
+    .back{
+      margin-top:14px;
+      display:inline-block;
+      color:rgba(255,255,255,.72);
+      text-decoration:none;
+      font-size:13px;
+      border:1px solid rgba(255,255,255,.18);
+      padding:10px 12px;
+      border-radius:12px;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
+  <div class="wrap">
     <h1>iPhoneで置くAR</h1>
-    <p>下のカードをタップするとARが開く。</p>
+    <p class="sub">下の画像を<strong>タップ</strong>するとARが開きます。</p>
 
-    <a class="ar" rel="ar" href="./onigiri.usdz">
-      <img src="./onigiriya_kanatake_512.png" alt="ARを開く">
-      <div class="label">ARで表示する（USDZ）</div>
-    </a>
+    <div class="card">
+      <a class="ar" rel="ar" href="./onigiri.usdz">
+        <img src="./onigiriya_kanatake_512.png" alt="ARを開く">
+        <div class="tap">ここをタップ <span>ARを開く</span></div>
+      </a>
+    </div>
 
     <div class="note">
-      うまくいかない時：明るい場所で机の上を映してから試して。
+      うまくいかない場合：明るい場所で机の上を映してからお試しください。<br>
+      SNSのアプリ内ブラウザで不安定な場合は、Safariで開き直すと安定します。
     </div>
+
+    <a class="back" href="./">← トップへ戻る</a>
   </div>
 </body>
 </html>
