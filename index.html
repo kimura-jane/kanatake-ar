@@ -4,16 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
-  <title>おにぎり屋かなたけ｜ARで遊ぶ</title>
-  <meta name="description" content="QRからすぐにAR体験。iPhoneは置くAR（USDZ）、AndroidはWebAR（対応端末）で楽しめます。" />
+  <title>おにぎり屋かなたけ｜かなたけちゃんAR</title>
+  <meta name="description" content="キッチンカーの待ち時間に、かなたけちゃんとARで写真。iPhoneは置くAR（USDZ）、AndroidはWebAR（対応端末）で楽しめます。" />
 
   <link rel="canonical" href="https://kanatake-ar.pages.dev/" />
 
   <!-- OGP -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="おにぎり屋かなたけ" />
-  <meta property="og:title" content="おにぎり屋かなたけ｜ARで遊ぶ" />
-  <meta property="og:description" content="QRからすぐにAR体験。iPhoneは置くAR（USDZ）、AndroidはWebAR（対応端末）で楽しめます。" />
+  <meta property="og:title" content="おにぎり屋かなたけ｜かなたけちゃんAR" />
+  <meta property="og:description" content="キッチンカーの待ち時間に、かなたけちゃんとARで写真。iPhoneは置くAR（USDZ）、AndroidはWebAR（対応端末）で楽しめます。" />
   <meta property="og:url" content="https://kanatake-ar.pages.dev/" />
   <meta property="og:image" content="https://kanatake-ar.pages.dev/ogp_kanatake_1200x630.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -21,121 +21,282 @@
 
   <!-- X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="おにぎり屋かなたけ｜ARで遊ぶ" />
-  <meta name="twitter:description" content="QRからすぐにAR体験。iPhoneは置くAR（USDZ）、AndroidはWebAR（対応端末）で楽しめます。" />
+  <meta name="twitter:title" content="おにぎり屋かなたけ｜かなたけちゃんAR" />
+  <meta name="twitter:description" content="キッチンカーの待ち時間に、かなたけちゃんとARで写真。iPhoneは置くAR（USDZ）、AndroidはWebAR（対応端末）で楽しめます。" />
   <meta name="twitter:image" content="https://kanatake-ar.pages.dev/ogp_kanatake_1200x630.jpg" />
 
   <style>
     :root{
-      --bg1:#070a10;
-      --bg2:#0b0f17;
-      --card:rgba(255,255,255,.08);
-      --line:rgba(255,255,255,.16);
-      --text:rgba(255,255,255,.92);
-      --sub:rgba(255,255,255,.66);
-      --accent:#ff375f;
-      --radius:18px;
-      --shadow:0 14px 40px rgba(0,0,0,.35);
+      --bg: #fbfaf7;
+      --ink: #1f2328;
+      --sub: rgba(31,35,40,.70);
+      --line: rgba(31,35,40,.12);
+      --card: rgba(255,255,255,.86);
+      --shadow: 0 16px 40px rgba(31,35,40,.10);
+      --radius: 20px;
+
+      /* おにぎりっぽい配色（海苔/梅/ごはん） */
+      --nori: #1f3b2c;
+      --ume: #e94b5a;
+      --rice: #fbfaf7;
+      --mint: #2bb3a6;
     }
-    *{box-sizing:border-box}
+
+    *{ box-sizing:border-box; }
     body{
       margin:0;
-      font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;
-      color:var(--text);
+      font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
+      color:var(--ink);
       background:
-        radial-gradient(1100px 720px at 12% 0%, rgba(255,55,95,.24), transparent 60%),
-        radial-gradient(1100px 720px at 88% 10%, rgba(0,194,255,.14), transparent 55%),
-        linear-gradient(180deg,var(--bg1),var(--bg2));
+        radial-gradient(12px 12px at 18px 18px, rgba(31,35,40,.035) 0 3px, transparent 3px),
+        radial-gradient(12px 12px at 44px 54px, rgba(31,35,40,.030) 0 3px, transparent 3px),
+        radial-gradient(900px 420px at 15% 0%, rgba(233,75,90,.10), transparent 60%),
+        radial-gradient(900px 420px at 90% 10%, rgba(43,179,166,.08), transparent 55%),
+        var(--bg);
+      background-size: 72px 72px, 72px 72px, auto, auto, auto;
       min-height:100vh;
     }
-    .wrap{max-width:720px;margin:0 auto;padding:22px 16px 26px}
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-    .dot{
-      width:10px;height:10px;border-radius:999px;background:var(--accent);
-      box-shadow:0 0 0 6px rgba(255,55,95,.18);
-      flex:0 0 auto;
+
+    .wrap{ max-width: 860px; margin: 0 auto; padding: 22px 16px 28px; }
+
+    .header{
+      display:flex; gap:14px; align-items:center; justify-content:space-between;
+      margin-bottom: 14px;
     }
-    h1{margin:0;font-size:20px;letter-spacing:.02em}
-    .lead{margin:10px 0 16px;color:var(--sub);font-size:14px;line-height:1.8}
+
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+
+    .mark{
+      width: 44px; height: 44px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(233,75,90,.18), rgba(43,179,166,.14));
+      border: 1px solid var(--line);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 22px rgba(31,35,40,.08);
+    }
+    .mark span{
+      width: 14px; height: 14px; border-radius: 999px; background: var(--ume);
+      box-shadow: 0 0 0 7px rgba(233,75,90,.12);
+      display:block;
+    }
+
+    h1{ margin:0; font-size: 18px; letter-spacing:.02em; }
+    .tagline{ margin:4px 0 0; color:var(--sub); font-size: 12.8px; }
+
+    .pill{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.70);
+      color: rgba(31,35,40,.78);
+      font-size: 12px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap: 14px;
+      align-items: stretch;
+      margin-top: 10px;
+    }
+    @media (max-width: 820px){
+      .hero{ grid-template-columns: 1fr; }
+    }
+
     .panel{
-      border:1px solid var(--line);
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
     }
-    .grid{display:grid;gap:10px}
+
+    .copy{
+      padding: 18px 18px 12px;
+    }
+    .copy h2{
+      margin: 0 0 8px;
+      font-size: 26px;
+      letter-spacing:.01em;
+    }
+    .copy p{
+      margin:0;
+      color: var(--sub);
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .cards{
+      display:grid;
+      gap: 10px;
+      padding: 0 18px 18px;
+    }
+
     a.card{
-      display:flex;gap:12px;align-items:flex-start;
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      text-decoration:none;color:var(--text);
-      transition:transform .06s ease, background .2s ease, border-color .2s ease;
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(31,35,40,.10);
+      background: rgba(255,255,255,.90);
+      text-decoration:none;
+      color: var(--ink);
+      transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
     }
-    a.card:hover{background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.07));border-color:rgba(255,255,255,.24)}
-    a.card:active{transform:scale(.99)}
+    a.card:hover{
+      border-color: rgba(31,35,40,.16);
+      box-shadow: 0 10px 22px rgba(31,35,40,.10);
+    }
+    a.card:active{ transform: scale(.99); }
+
     .ico{
-      width:40px;height:40px;border-radius:12px;
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.16);
-      display:grid;place-items:center;
-      flex:0 0 auto;
-      font-size:18px;
+      width: 42px; height: 42px; border-radius: 14px;
+      border: 1px solid rgba(31,35,40,.10);
+      background: linear-gradient(135deg, rgba(31,59,44,.08), rgba(233,75,90,.06));
+      display:grid; place-items:center;
+      flex: 0 0 auto;
+      font-size: 18px;
     }
-    .t{margin:0 0 4px;font-weight:800;font-size:16px}
-    .s{margin:0;color:var(--sub);font-size:12.8px;line-height:1.6}
-    .hint{
-      margin-top:12px;
-      color:rgba(255,255,255,.60);
-      font-size:12.5px;
-      line-height:1.8;
+    .t{ margin: 0 0 3px; font-weight: 900; font-size: 15.5px; }
+    .s{ margin: 0; color: var(--sub); font-size: 12.8px; line-height: 1.7; }
+
+    .mini{
+      margin-top: 10px;
+      padding: 12px 18px 18px;
+      border-top: 1px dashed rgba(31,35,40,.14);
+      color: rgba(31,35,40,.72);
+      font-size: 12.8px;
+      line-height: 1.9;
     }
-    .footer{margin-top:14px;text-align:center;color:rgba(255,255,255,.42);font-size:12px}
+    .mini strong{ color: var(--nori); }
+
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .mascot{
+      display:grid; place-items:center;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(31,35,40,.10);
+      background: linear-gradient(180deg, rgba(233,75,90,.08), rgba(43,179,166,.06));
+    }
+    .mascot img{
+      width: 100%;
+      max-width: 240px;
+      height:auto;
+      display:block;
+      filter: drop-shadow(0 14px 18px rgba(31,35,40,.18));
+    }
+
+    .note{
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(31,35,40,.10);
+      background: rgba(255,255,255,.78);
+      color: rgba(31,35,40,.74);
+      font-size: 12.2px;
+      line-height: 1.8;
+    }
+
+    .footer{
+      margin-top: 14px;
+      text-align:center;
+      color: rgba(31,35,40,.48);
+      font-size: 12px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(233,75,90,.22);
+      background: rgba(233,75,90,.08);
+      color: rgba(31,35,40,.80);
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    .badge i{
+      width:8px; height:8px; border-radius:999px; background: var(--ume);
+      display:inline-block;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <div class="brand">
-      <span class="dot" aria-hidden="true"></span>
-      <div>
-        <h1>おにぎり屋かなたけ｜ARで遊ぶ</h1>
-        <div class="lead">端末に合わせてお選びください。</div>
+    <div class="header">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"><span></span></div>
+        <div>
+          <h1>おにぎり屋かなたけ｜かなたけちゃんAR</h1>
+          <div class="tagline">キッチンカーの待ち時間に、いっしょに写真。</div>
+        </div>
       </div>
+      <div class="pill">無料で体験できます</div>
     </div>
 
-    <div class="panel">
-      <div class="grid">
-        <a class="card" href="./iphone.html">
-          <div class="ico" aria-hidden="true">🍙</div>
-          <div>
-            <p class="t">iPhoneで置くAR</p>
-            <p class="s">タップしてAR表示（USDZ）を開きます。</p>
-          </div>
-        </a>
+    <div class="hero">
+      <section class="panel">
+        <div class="copy">
+          <h2>かなたけちゃんと、ARで一枚。</h2>
+          <p>
+            おにぎり屋かなたけは、キッチンカーの活動を通じて子ども支援に取り組んでいます。<br>
+            よろしければ、AR写真も楽しんでいってください。
+          </p>
+          <div class="badge"><i></i> 子ども支援の取り組み</div>
+        </div>
 
-        <a class="card" href="./android.html">
-          <div class="ico" aria-hidden="true">🤖</div>
-          <div>
-            <p class="t">Androidで置くAR</p>
-            <p class="s">対応端末でAR表示（WebAR）。</p>
-          </div>
-        </a>
+        <div class="cards">
+          <a class="card" href="./iphone.html">
+            <div class="ico" aria-hidden="true">🍙</div>
+            <div>
+              <p class="t">iPhoneで置くAR</p>
+              <p class="s">「ここをタップ」でAR表示（USDZ）を開きます。</p>
+            </div>
+          </a>
 
-        <a class="card" href="./selfie.html">
-          <div class="ico" aria-hidden="true">📷</div>
-          <div>
-            <p class="t">肩に乗る（自撮り）</p>
-            <p class="s">カメラで自撮りしてお楽しみください。</p>
-          </div>
-        </a>
-      </div>
+          <a class="card" href="./android.html">
+            <div class="ico" aria-hidden="true">🤖</div>
+            <div>
+              <p class="t">Androidで置くAR</p>
+              <p class="s">対応端末でAR表示（WebAR）。</p>
+            </div>
+          </a>
 
-      <div class="hint">
-        うまく表示されない場合：明るい場所で机の上を映してからお試しください。<br>
-        SNSのアプリ内ブラウザで不安定な場合は、Safari/Chromeで開き直すと安定します。
-      </div>
+          <a class="card" href="./selfie.html">
+            <div class="ico" aria-hidden="true">📷</div>
+            <div>
+              <p class="t">肩に乗る（自撮り）</p>
+              <p class="s">カメラで自撮りしてお楽しみください。</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="mini">
+          <strong>うまく表示されない場合：</strong>
+          明るい場所で机の上を映してからお試しください。<br>
+          SNSアプリ内ブラウザで不安定な場合は、Safari/Chromeで開き直すと安定します。
+        </div>
+      </section>
+
+      <aside class="panel side">
+        <div class="mascot">
+          <img src="./onigiriya_kanatake_512.png" alt="かなたけちゃん">
+        </div>
+        <div class="note">
+          写真を撮ったら、よろしければSNSで共有してください。<br>
+          ※周囲のお客さまが写り込まないようご配慮ください。
+        </div>
+      </aside>
     </div>
 
     <div class="footer">© おにぎり屋かなたけ</div>
