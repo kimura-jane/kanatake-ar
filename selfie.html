@@ -3,201 +3,129 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#F7F4F2" />
-  <title>かなたけちゃんと一緒に撮ろう（自撮り）｜かなたけちゃんAR</title>
-
+  <title>かなたけちゃんと一緒に撮ろう（自撮り）</title>
+  <meta name="robots" content="noindex" />
   <style>
-    :root{
-      --ink:#1B1B1F; --sub:#5B5B67;
-      --brand:#E94B5A; --brand2:#FF7A7A;
-      --stroke:#00000010; --shadow:0 18px 50px rgba(16,24,40,.12);
-      --radius:18px;
-    }
+    :root{ --ink:#2b2b2b; --muted:#6a6a6a; --accent:#ef5a67; --accent2:#ff7b86; }
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
       color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 20% 0%, #FFE7EA 0%, transparent 60%),
-        radial-gradient(900px 500px at 90% 10%, #E8F5FF 0%, transparent 55%),
-        linear-gradient(180deg, #F7F4F2, #FFFFFF);
-      min-height:100vh;
+      background:#0b0b0c;
     }
-    .wrap{max-width:980px;margin:0 auto;padding:22px 16px 34px;}
-    h1{margin:0 0 6px;font-size:24px;}
-    p{margin:8px 0 0;color:var(--sub);line-height:1.7;font-size:13px;}
-
-    .panel{
-      margin-top:14px;
-      background:#FFFFFFCC;
-      border:1px solid var(--stroke);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:14px;
-      backdrop-filter: blur(8px);
+    .topbar{
+      position:fixed; left:0; right:0; top:0;
+      padding:12px 12px calc(12px + env(safe-area-inset-top));
+      background:linear-gradient(180deg, rgba(0,0,0,.70), rgba(0,0,0,0));
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      z-index:10;
     }
-
+    .title{color:#fff; font-weight:900; font-size:14px}
+    .btn{
+      appearance:none; border:none;
+      padding:10px 12px; border-radius:12px;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#fff; font-weight:900;
+    }
+    .btn2{
+      appearance:none; border:1px solid rgba(255,255,255,.25);
+      padding:10px 12px; border-radius:12px;
+      background:rgba(255,255,255,.06);
+      color:#fff; font-weight:800;
+    }
     .stage{
-      position:relative;
-      width:100%;
-      border-radius:16px;
+      position:fixed; inset:0;
       overflow:hidden;
-      border:1px solid var(--stroke);
-      background: linear-gradient(180deg,#111,#333);
-      box-shadow: 0 16px 30px rgba(16,24,40,.10);
-      touch-action:none;
     }
     video{
-      width:100%;
-      height:auto;
-      display:block;
-      background:#000;
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      transform: scaleX(-1); /* 自撮りミラー */
     }
-    .overlay{
-      position:absolute;
-      left:0; top:0;
-      width: 220px;
-      height:auto;
-      transform-origin: 0 0;
-      user-select:none;
-      -webkit-user-drag:none;
+    canvas{
+      position:absolute; inset:0;
+      width:100%; height:100%;
       touch-action:none;
-      filter: drop-shadow(0 16px 20px rgba(0,0,0,.25));
     }
-    .overlayHint{
-      position:absolute;
-      left:12px; top:12px;
-      padding:8px 10px;
-      border-radius:12px;
-      background: rgba(255,255,255,.85);
-      border:1px solid var(--stroke);
-      font-size:12px;
-      color:var(--sub);
-      backdrop-filter: blur(8px);
-    }
-
-    .controls{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:12px;
-    }
-    button, a.btn{
-      appearance:none;
-      border:0;
-      border-radius:14px;
-      padding:12px 14px;
-      font-weight:800;
-      letter-spacing:.02em;
-      cursor:pointer;
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
-    button.primary{
-      color:#fff;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-      box-shadow: 0 16px 30px rgba(233,75,90,.28);
-      border:1px solid rgba(255,255,255,.25);
-    }
-    button.ghost, a.btn.ghost{
+    .hint{
+      position:fixed; left:12px; right:12px; bottom:12px;
+      padding:12px 12px calc(12px + env(safe-area-inset-bottom));
+      border-radius:16px;
+      background:rgba(255,255,255,.92);
       color:var(--ink);
-      background:#FFFFFFAA;
-      border:1px solid var(--stroke);
+      font-size:13px;
+      line-height:1.7;
+      z-index:10;
     }
-    button.small{
-      padding:10px 12px;
+    .hint b{display:block; margin-bottom:4px}
+    .hint small{color:var(--muted)}
+    .link{
+      color:#2b2b2b;
+      text-decoration:underline;
       font-weight:800;
     }
-    .note{
-      margin-top:12px;
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px solid var(--stroke);
-      background:#FFFFFFAA;
-      color:var(--sub);
-      font-size:12px;
-      line-height:1.75;
-    }
-
-    .result{
-      display:none;
-      margin-top:12px;
-      border-radius:16px;
-      overflow:hidden;
-      border:1px solid var(--stroke);
-      background:#fff;
-    }
-    .result img{width:100%;height:auto;display:block}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>かなたけちゃんと一緒に撮ろう（自撮り）</h1>
-    <p>かなたけちゃんは、指で移動／「サイズ＋−」で拡大縮小できます。</p>
-
-    <div class="panel">
-      <div class="stage" id="stage">
-        <div class="overlayHint">かなたけちゃんを動かして、撮影してください</div>
-        <video id="video" playsinline autoplay muted></video>
-        <img id="sticker" class="overlay" src="./kanatake.png" alt="かなたけちゃん">
-      </div>
-
-      <div class="controls">
-        <button class="ghost small" id="flip">カメラ切替</button>
-        <button class="ghost small" id="bigger">サイズ＋</button>
-        <button class="ghost small" id="smaller">サイズ−</button>
-        <button class="primary" id="shot">撮影する</button>
-        <button class="ghost" id="reset">リセット</button>
-        <a class="btn ghost" href="./index.html">トップへ戻る</a>
-      </div>
-
-      <div class="note">
-        撮影したら、よろしければSNSで共有してください。<br>
-        ※顔出しが難しい場合は、ぼかし・スタンプ等で編集してから投稿いただいて構いません。<br>
-        ※周囲のお客様が写り込まないようご配慮ください。
-      </div>
-
-      <div class="result" id="result">
-        <img id="resultImg" alt="撮影結果">
-        <div class="controls" style="padding:12px;">
-          <a class="btn primary" id="download" href="#" download="kanatake_selfie.png">画像を保存</a>
-          <button class="ghost" id="closeResult">戻る</button>
-        </div>
-      </div>
+  <div class="topbar">
+    <div class="title">かなたけちゃんと一緒に撮ろう（自撮り）</div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn2" id="switchBtn" type="button">カメラ切替</button>
+      <button class="btn" id="shotBtn" type="button">撮影</button>
     </div>
   </div>
 
+  <div class="stage">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="hint">
+    <b>操作</b>
+    指でドラッグして移動／2本指で拡大・縮小できます。<br>
+    写真を撮ったら、よろしければSNSで共有してください。<br>
+    <small>
+      ※周囲のお客様が写り込まないようご配慮ください。<br>
+      ※顔出しNGの方は、スタンプ・ぼかし等で<b>編集していただいて大丈夫</b>です。
+    </small><br>
+    <a class="link" href="index.html">トップへ戻る</a>
+  </div>
+
   <script>
-    const video = document.getElementById('video');
-    const stage = document.getElementById('stage');
-    const sticker = document.getElementById('sticker');
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
 
-    const btnFlip = document.getElementById('flip');
-    const btnBigger = document.getElementById('bigger');
-    const btnSmaller = document.getElementById('smaller');
-    const btnShot = document.getElementById('shot');
-    const btnReset = document.getElementById('reset');
-
-    const result = document.getElementById('result');
-    const resultImg = document.getElementById('resultImg');
-    const download = document.getElementById('download');
-    const closeResult = document.getElementById('closeResult');
+    const shotBtn = document.getElementById("shotBtn");
+    const switchBtn = document.getElementById("switchBtn");
 
     let stream = null;
-    let facingMode = 'user';
+    let facingMode = "user"; // self camera
 
-    // ステッカー状態（stage内のCSSピクセル基準）
-    let state = { x: 20, y: 80, scale: 1.0 };
+    // overlay image
+    const overlay = new Image();
+    overlay.src = "kanatake.png";
 
-    function applySticker(){
-      sticker.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+    // overlay transform
+    let ox = 0, oy = 0, scale = 0.45;
+    let dragging = false;
+    let lastX = 0, lastY = 0;
+
+    // pinch
+    let pinch = false;
+    let startDist = 0;
+    let startScale = 1;
+
+    function resize(){
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr,0,0,dpr,0,0);
     }
-
-    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
 
     async function startCamera(){
       if(stream){
@@ -210,129 +138,146 @@
           audio: false
         });
         video.srcObject = stream;
-        await video.play();
       }catch(e){
-        alert('カメラを起動できませんでした。ブラウザの権限設定をご確認ください。');
+        alert("カメラが起動できませんでした。Safari / Chromeで開き直してお試しください。");
       }
     }
 
-    // ドラッグ（1本指）
-    let dragging = false;
-    let start = { px:0, py:0, x:0, y:0 };
+    function draw(){
+      requestAnimationFrame(draw);
 
-    function pointFromEvent(ev){
-      const p = ev.touches ? ev.touches[0] : ev;
-      return { x: p.clientX, y: p.clientY };
+      // canvas上に “見えている状態” を描画（撮影用に使う）
+      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+
+      // overlay
+      const ow = overlay.naturalWidth || 1024;
+      const oh = overlay.naturalHeight || 1024;
+      const w = ow * scale;
+      const h = oh * scale;
+
+      // 初期位置（ロード直後だけ中央寄せ）
+      if(ox === 0 && oy === 0 && overlay.complete){
+        ox = (window.innerWidth - w) * 0.5;
+        oy = (window.innerHeight - h) * 0.55;
+      }
+
+      // 影を薄く（合成の視認性だけ上げる）
+      ctx.save();
+      ctx.globalAlpha = 0.98;
+      ctx.drawImage(overlay, ox, oy, w, h);
+      ctx.restore();
     }
 
-    function withinSticker(target){
-      return target === sticker;
+    function getTouchDist(t1, t2){
+      const dx = t2.clientX - t1.clientX;
+      const dy = t2.clientY - t1.clientY;
+      return Math.hypot(dx, dy);
     }
 
-    stage.addEventListener('pointerdown', (ev) => {
-      if(!withinSticker(ev.target)) return;
-      dragging = true;
-      sticker.setPointerCapture(ev.pointerId);
-      const p = pointFromEvent(ev);
-      start = { px: p.x, py: p.y, x: state.x, y: state.y };
+    canvas.addEventListener("touchstart", (e) => {
+      if(e.touches.length === 1){
+        dragging = true;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      }else if(e.touches.length === 2){
+        pinch = true;
+        startDist = getTouchDist(e.touches[0], e.touches[1]);
+        startScale = scale;
+      }
+    }, {passive:false});
+
+    canvas.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      if(pinch && e.touches.length === 2){
+        const dist = getTouchDist(e.touches[0], e.touches[1]);
+        const ratio = dist / Math.max(1, startDist);
+        scale = Math.min(1.4, Math.max(0.12, startScale * ratio));
+      }else if(dragging && e.touches.length === 1){
+        const x = e.touches[0].clientX;
+        const y = e.touches[0].clientY;
+        ox += (x - lastX);
+        oy += (y - lastY);
+        lastX = x; lastY = y;
+      }
+    }, {passive:false});
+
+    canvas.addEventListener("touchend", (e) => {
+      dragging = false;
+      if(e.touches.length < 2) pinch = false;
     });
 
-    stage.addEventListener('pointermove', (ev) => {
-      if(!dragging) return;
-      const p = pointFromEvent(ev);
-      const dx = p.x - start.px;
-      const dy = p.y - start.py;
-      state.x = start.x + dx;
-      state.y = start.y + dy;
-      applySticker();
-    });
-
-    stage.addEventListener('pointerup', () => { dragging = false; });
-    stage.addEventListener('pointercancel', () => { dragging = false; });
-
-    btnBigger.addEventListener('click', () => {
-      state.scale = clamp(state.scale + 0.12, 0.35, 3.0);
-      applySticker();
-    });
-    btnSmaller.addEventListener('click', () => {
-      state.scale = clamp(state.scale - 0.12, 0.35, 3.0);
-      applySticker();
-    });
-
-    btnFlip.addEventListener('click', async () => {
-      facingMode = (facingMode === 'user') ? 'environment' : 'user';
+    switchBtn.addEventListener("click", async () => {
+      facingMode = (facingMode === "user") ? "environment" : "user";
+      // ミラーは自撮りだけ
+      video.style.transform = (facingMode === "user") ? "scaleX(-1)" : "none";
       await startCamera();
     });
 
-    btnReset.addEventListener('click', () => {
-      state = { x: 20, y: 80, scale: 1.0 };
-      applySticker();
-    });
-
-    closeResult.addEventListener('click', () => {
-      result.style.display = 'none';
-    });
-
-    // 撮影（videoとstickerを合成）
-    btnShot.addEventListener('click', () => {
-      if(!video.videoWidth || !video.videoHeight){
-        alert('カメラ映像の準備中です。少し待ってからお試しください。');
+    shotBtn.addEventListener("click", () => {
+      // 撮影：video + overlay を合成してダウンロード
+      const w = video.videoWidth;
+      const h = video.videoHeight;
+      if(!w || !h){
+        alert("カメラの準備中です。少し待ってからお試しください。");
         return;
       }
 
-      // 表示サイズ
-      const rectVideo = video.getBoundingClientRect();
-      const rectStage = stage.getBoundingClientRect();
+      const out = document.createElement("canvas");
+      out.width = w; out.height = h;
+      const octx = out.getContext("2d");
 
-      // stage内でのvideo左上（ここではvideoがstage幅100%なので、ほぼ一致）
-      const displayW = rectVideo.width;
-      const displayH = rectVideo.height;
+      // video描画（自撮り時は左右反転を反映）
+      if(facingMode === "user"){
+        octx.save();
+        octx.translate(w, 0);
+        octx.scale(-1, 1);
+        octx.drawImage(video, 0, 0, w, h);
+        octx.restore();
+      }else{
+        octx.drawImage(video, 0, 0, w, h);
+      }
 
-      // 実ピクセルへ変換
-      const sx = video.videoWidth / displayW;
-      const sy = video.videoHeight / displayH;
+      // overlay位置を video座標へ変換（画面比率差を考慮）
+      // 表示は object-fit: cover なので、その分を計算
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const videoAR = w / h;
+      const viewAR = vw / vh;
 
-      // キャンバス（動画解像度で出力）
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d');
+      let drawW, drawH, offX, offY;
+      if(videoAR > viewAR){
+        // 横が余る（左右がはみ出す）
+        drawH = vh;
+        drawW = vh * videoAR;
+        offX = (vw - drawW) / 2;
+        offY = 0;
+      }else{
+        // 縦が余る（上下がはみ出す）
+        drawW = vw;
+        drawH = vw / videoAR;
+        offX = 0;
+        offY = (vh - drawH) / 2;
+      }
 
-      // video描画（object-fit: デフォルトでそのまま）
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const sx = (ox - offX) / drawW * w;
+      const sy = (oy - offY) / drawH * h;
 
-      // sticker描画位置（stage基準 → video表示基準へ）
-      // stageとvideoは同じレイアウト前提（videoがstage内で100%）
-      const px = (state.x) * sx;
-      const py = (state.y) * sy;
+      const ow = (overlay.naturalWidth || 1024) * scale / drawW * w;
+      const oh = (overlay.naturalHeight || 1024) * scale / drawH * h;
 
-      // sticker実表示幅（CSS上の元画像幅 * scale）
-      const stickerW = sticker.naturalWidth * state.scale;
-      const stickerH = sticker.naturalHeight * state.scale;
+      octx.drawImage(overlay, sx, sy, ow, oh);
 
-      // CSS表示の sticker 幅は固定220pxから始まるが、naturalWidthとズレる可能性があるため補正
-      // 現在の表示幅を取得して、自然サイズ比を使う
-      const rectSticker = sticker.getBoundingClientRect();
-      const dispStickerW = rectSticker.width;
-      const dispStickerH = rectSticker.height;
-
-      const pw = dispStickerW * sx;
-      const ph = dispStickerH * sy;
-
-      // 透過PNGとして描画
-      ctx.drawImage(sticker, px, py, pw, ph);
-
-      const url = canvas.toDataURL('image/png');
-      resultImg.src = url;
-      download.href = url;
-      result.style.display = 'block';
+      const url = out.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "kanatake_cam.png";
+      a.click();
     });
 
-    // 初期化
-    (async function(){
-      applySticker();
-      await startCamera();
-    })();
+    window.addEventListener("resize", resize);
+
+    resize();
+    startCamera();
+    draw();
   </script>
 </body>
 </html>
