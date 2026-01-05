@@ -3,319 +3,246 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="format-detection" content="telephone=no,email=no,address=no" />
+  <meta name="theme-color" content="#F7F4F2" />
 
   <title>おにぎり屋かなたけ｜かなたけちゃんAR</title>
-  <meta name="description" content="キッチンカーの待ち時間に、かなたけちゃんと一緒にARで記念撮影。iPhone/Android/自撮り合成に対応。" />
+  <meta name="description" content="キッチンカーの待ち時間に、かなたけちゃんと一緒にARで写真。おにぎり屋かなたけの子ども支援の取り組みの一環です。" />
 
-  <!-- ===== OGP / Twitter =====
-    ✅ ここだけ必要なら変更：
-    - og:url  … 公開URL（GitHub Pages / Cloudflare Pages）
-    - og:image … ogp_kanatake_1200x630.jpg or .png の「公開URL」
-  -->
+  <!-- ここを本番URLに置換（OGPは絶対URLが必要） -->
+  <link rel="canonical" href="https://kanatake-ar.pages.dev/" />
+
+  <!-- OGP -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="おにぎり屋かなたけ" />
-  <meta property="og:title" content="かなたけちゃんと一緒に撮ろう。" />
-  <meta property="og:description" content="待ち時間に、ARで記念撮影。iPhone/Android/自撮り合成に対応。" />
-
-  <!-- og:url は GitHub Pages ならこの形（必要なら差し替え） -->
-  <meta property="og:url" content="https://kimura-jane.github.io/kanatake-ar/" />
-
-  <!-- og:image は「絶対URL」が必要（必要なら差し替え） -->
-  <meta property="og:image" content="https://kimura-jane.github.io/kanatake-ar/ogp_kanatake_1200x630.jpg" />
+  <meta property="og:title" content="かなたけちゃんと一緒に撮ろう｜かなたけちゃんAR" />
+  <meta property="og:description" content="キッチンカーの待ち時間に、かなたけちゃんとARで一枚。子ども支援の取り組みの中で楽しめる小さな体験です。" />
+  <meta property="og:url" content="https://kanatake-ar.pages.dev/" />
+  <meta property="og:image" content="https://kanatake-ar.pages.dev/ogp_kanatake_1200x630.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="かなたけちゃんと一緒に撮ろう。" />
-  <meta name="twitter:description" content="待ち時間に、ARで記念撮影。iPhone/Android/自撮り合成に対応。" />
-  <meta name="twitter:image" content="https://kimura-jane.github.io/kanatake-ar/ogp_kanatake_1200x630.jpg" />
 
   <style>
     :root{
-      --bg1:#fbf6f7;
-      --bg2:#f2f7fb;
-      --card:#ffffffcc;
-      --ink:#101317;
-      --muted:#5b6773;
-      --line:#e6e8ee;
-      --accent:#ff5a77;
-      --accent2:#3b82f6;
-      --shadow: 0 14px 40px rgba(16,19,23,.10);
+      --bg1:#F7F4F2;
+      --bg2:#FFF;
+      --ink:#1B1B1F;
+      --sub:#5B5B67;
+      --brand:#E94B5A;
+      --brand2:#FF7A7A;
+      --card:#FFFFFFCC;
+      --stroke:#00000010;
+      --shadow: 0 18px 50px rgba(16, 24, 40, .12);
       --radius: 18px;
-      --radius2: 14px;
-      --max: 980px;
     }
-
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Segoe UI", sans-serif;
       color:var(--ink);
       background:
-        radial-gradient(900px 380px at 20% 10%, rgba(255,90,119,.18), transparent 60%),
-        radial-gradient(700px 340px at 85% 18%, rgba(59,130,246,.16), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
+        radial-gradient(1200px 600px at 20% 0%, #FFE7EA 0%, transparent 60%),
+        radial-gradient(900px 500px at 90% 10%, #E8F5FF 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg1), #FFFFFF);
+      min-height:100vh;
     }
-
     .wrap{
-      max-width: var(--max);
+      max-width: 980px;
       margin: 0 auto;
-      padding: 22px 16px 40px;
+      padding: 22px 16px 38px;
     }
-
-    .topbar{
+    header{
       display:flex;
       align-items:center;
+      justify-content:space-between;
       gap:12px;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.55);
-      backdrop-filter: blur(10px);
-      border-radius: 999px;
-      width: fit-content;
-      box-shadow: 0 8px 22px rgba(16,19,23,.06);
+      padding: 10px 6px 16px;
     }
-    .logo{
-      width:34px;height:34px;border-radius:12px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,90,119,.35), transparent 60%),
-                  radial-gradient(circle at 70% 70%, rgba(59,130,246,.25), transparent 55%),
-                  #fff;
-      border: 1px solid var(--line);
-      display:grid;place-items:center;
-      font-weight:800;
-    }
-    .brand{
-      line-height:1.1;
-      font-weight:800;
+    .brandline{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700;
       letter-spacing:.02em;
     }
-    .sub{
-      color:var(--muted);
-      font-size:12px;
-      margin-top:4px;
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--stroke);
+      color: var(--sub);
+      font-size: 12px;
+      box-shadow: 0 10px 24px rgba(16,24,40,.08);
+      white-space:nowrap;
     }
-
     .hero{
-      margin-top: 18px;
-      border: 1px solid var(--line);
-      background: var(--card);
+      background: linear-gradient(180deg, #FFFFFFCC, #FFFFFFAA);
+      border: 1px solid var(--stroke);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 22px 18px;
       overflow:hidden;
       position:relative;
     }
-    .hero:before{
+    .hero::before{
       content:"";
-      position:absolute; inset:-1px;
-      background:
-        radial-gradient(600px 240px at 10% 0%, rgba(255,90,119,.12), transparent 60%),
-        radial-gradient(520px 220px at 95% 20%, rgba(59,130,246,.10), transparent 55%);
-      pointer-events:none;
+      position:absolute;
+      inset:-80px -120px auto auto;
+      width:320px; height:320px;
+      background: radial-gradient(circle at 30% 30%, rgba(233,75,90,.25), transparent 60%);
+      transform: rotate(12deg);
     }
-    .hero > *{position:relative}
-    h1{
-      margin:0;
-      font-size: clamp(28px, 4.2vw, 44px);
-      letter-spacing: .01em;
+    .hero h1{
+      margin: 0 0 6px;
+      font-size: clamp(24px, 4.3vw, 40px);
+      line-height: 1.15;
     }
-    .lead{
-      margin: 10px 0 0;
-      color: var(--muted);
-      font-size: 15px;
+    .hero p{
+      margin: 8px 0 0;
+      color: var(--sub);
       line-height: 1.7;
-      max-width: 58ch;
+      font-size: 14px;
+      max-width: 60ch;
     }
-
-    .pillrow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 14px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.70);
-      color: var(--ink);
-      font-size: 13px;
-      user-select:none;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:99px;background:var(--accent);
-      box-shadow: 0 0 0 4px rgba(255,90,119,.15);
-    }
-
     .grid{
       display:grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 14px;
       margin-top: 14px;
     }
-    @media(min-width: 780px){
-      .grid{ grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    @media (max-width: 860px){
+      .grid{grid-template-columns:1fr}
     }
-
     .card{
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.72);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius2);
-      box-shadow: 0 10px 24px rgba(16,19,23,.06);
-      padding: 16px 14px;
-      text-decoration:none;
-      color: inherit;
-      display:flex;
-      gap: 12px;
-      align-items:flex-start;
-      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: 0 14px 34px rgba(16,24,40,.10);
+      padding: 14px 14px 16px;
+      display:flex; flex-direction:column; gap:10px;
+      backdrop-filter: blur(8px);
     }
-    .card:active{ transform: scale(.99); }
-    .card:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 14px 34px rgba(16,19,23,.10);
-      border-color: rgba(255,90,119,.28);
+    .cardTop{
+      display:flex; align-items:center; gap:10px;
     }
     .icon{
-      width:42px;height:42px;border-radius:14px;
-      display:grid;place-items:center;
-      border: 1px solid var(--line);
+      width:40px; height:40px;
+      border-radius: 12px;
       background: #fff;
-      flex: 0 0 auto;
-      font-size: 20px;
+      border: 1px solid var(--stroke);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 18px rgba(16,24,40,.08);
+      font-size: 18px;
     }
     .card h2{
-      margin: 0;
-      font-size: 18px;
+      margin:0;
+      font-size: 16px;
       letter-spacing:.01em;
     }
     .card p{
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 13px;
+      margin:0;
+      color: var(--sub);
       line-height: 1.6;
-    }
-    .hint{
-      margin-top: 12px;
-      border-top: 1px dashed rgba(91,103,115,.30);
-      padding-top: 12px;
-      color: var(--muted);
       font-size: 13px;
-      line-height: 1.7;
     }
-
+    a.btn{
+      margin-top:auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      width:100%;
+      text-decoration:none;
+      color:white;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-weight: 700;
+      letter-spacing:.02em;
+      box-shadow: 0 16px 30px rgba(233,75,90,.28);
+      border: 1px solid rgba(255,255,255,.25);
+    }
+    a.btn span{
+      opacity:.92;
+      font-weight:600;
+      font-size:12px;
+    }
     .note{
       margin-top: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.62);
-      border-radius: var(--radius2);
-      padding: 14px 14px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-    .note b{color:var(--ink)}
-    footer{
-      margin-top: 18px;
-      text-align:center;
-      color: rgba(91,103,115,.80);
+      color: var(--sub);
       font-size: 12px;
+      line-height: 1.75;
+      padding: 14px 14px;
+      border-radius: var(--radius);
+      background:#FFFFFFAA;
+      border: 1px solid var(--stroke);
     }
-
-    .small{
-      font-size:12px;
-      color: rgba(91,103,115,.85);
-    }
-    .links{
-      display:flex;
-      justify-content:center;
-      gap: 14px;
-      flex-wrap:wrap;
-      margin-top: 8px;
-    }
-    .links a{
-      color: rgba(16,19,23,.80);
-      text-decoration: none;
-      border-bottom: 1px dotted rgba(16,19,23,.25);
+    footer{
+      margin-top: 14px;
+      text-align:center;
+      color: #8A8A95;
+      font-size: 12px;
+      padding: 10px 0 0;
     }
   </style>
 </head>
-
 <body>
-  <main class="wrap">
-    <div class="topbar" aria-label="サイト情報">
-      <div class="logo" aria-hidden="true">🍙</div>
-      <div>
-        <div class="brand">おにぎり屋かなたけ｜かなたけちゃんAR</div>
-        <div class="sub">キッチンカーの待ち時間に、いっしょに写真。</div>
-      </div>
-    </div>
+  <div class="wrap">
+    <header>
+      <div class="brandline">おにぎり屋かなたけ｜かなたけちゃんAR</div>
+      <div class="pill">待ち時間に、いっしょに一枚。</div>
+    </header>
 
     <section class="hero">
       <h1>かなたけちゃんと一緒に撮ろう。</h1>
-      <p class="lead">
+      <p>
         おにぎり屋かなたけは、キッチンカーの活動を通じて子ども支援に取り組んでいます。<br>
         よろしければ、AR写真も楽しんでいってください。
       </p>
 
-      <div class="pillrow" role="list" aria-label="補足情報">
-        <div class="pill" role="listitem"><span class="dot" aria-hidden="true"></span>待ち時間にサクッと</div>
-        <div class="pill" role="listitem"><span class="dot" aria-hidden="true" style="background:var(--accent2);box-shadow:0 0 0 4px rgba(59,130,246,.14)"></span>iPhone / Android 対応</div>
-        <div class="pill" role="listitem"><span class="dot" aria-hidden="true" style="background:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.14)"></span>自撮り合成もOK</div>
-      </div>
-
       <div class="grid" aria-label="メニュー">
-        <a class="card" href="./iphone.html" aria-label="iPhoneでAR（USDZ）へ">
-          <div class="icon" aria-hidden="true">📱</div>
-          <div>
-            <h2>iPhoneでAR（USDZ）</h2>
-            <p>「ここをタップ」でAR表示が開きます。机の上などでお試しください。</p>
+        <div class="card">
+          <div class="cardTop">
+            <div class="icon">🍙</div>
+            <div>
+              <h2>iPhoneで置くAR</h2>
+              <p>「ここをタップ」でAR（USDZ）を開きます。</p>
+            </div>
           </div>
-        </a>
+          <a class="btn" href="./iphone.html">iPhoneでARを開く <span>（1タップ推奨）</span></a>
+        </div>
 
-        <a class="card" href="./android.html" aria-label="AndroidでAR（WebAR）へ">
-          <div class="icon" aria-hidden="true">🤖</div>
-          <div>
-            <h2>AndroidでAR（WebAR）</h2>
-            <p>対応端末でAR表示。端末によっては3Dビュー表示になります。</p>
+        <div class="card">
+          <div class="cardTop">
+            <div class="icon">🤖</div>
+            <div>
+              <h2>Androidで置くAR</h2>
+              <p>対応端末でAR表示（WebAR / ARCore）。</p>
+            </div>
           </div>
-        </a>
+          <a class="btn" href="./android.html">AndroidでARを開く <span>（対応端末のみ）</span></a>
+        </div>
 
-        <a class="card" href="./selfie.html" aria-label="Kanatake Cam（Selfie）へ">
-          <div class="icon" aria-hidden="true">📸</div>
-          <div>
-            <h2>Kanatake Cam（Selfie）</h2>
-            <p>カメラで合成して撮影。位置・サイズは自由に調整できます。</p>
+        <div class="card">
+          <div class="cardTop">
+            <div class="icon">📷</div>
+            <div>
+              <h2>かなたけちゃんと一緒に撮ろう（自撮り）</h2>
+              <p>カメラで撮影。移動・サイズ調整もできます。</p>
+            </div>
           </div>
-        </a>
-      </div>
-
-      <div class="hint">
-        <b>うまく表示されない場合：</b>明るい場所で、机の上など平らな面を映してからお試しください。<br>
-        <b>SNSアプリ内ブラウザで不安定な場合：</b>Safari / Chrome で開き直すと安定します。
-      </div>
-
-      <div class="note">
-        写真が撮れたら、よろしければSNSでシェアしてください。<br>
-        <b>顔出しNGの方は、スタンプ・モザイク・トリミングなどで編集してからでも大丈夫です。</b><br>
-        <span class="small">※周囲のお客さまが写り込まないようご配慮ください。</span>
+          <a class="btn" href="./selfie.html">自撮りで撮る <span>（編集してOK）</span></a>
+        </div>
       </div>
     </section>
 
-    <footer>
-      © おにぎり屋かなたけ
-      <div class="links" aria-label="補助リンク">
-        <a href="./selfie.html">Kanatake Cam（Selfie）</a>
-        <a href="./iphone.html">iPhone AR</a>
-        <a href="./android.html">Android AR</a>
-      </div>
-    </footer>
-  </main>
+    <div class="note">
+      <strong>お願い：</strong>撮影の際は、周囲のお客様が写り込まないようご配慮ください。<br>
+      顔出しが難しい場合は、ぼかし・スタンプ等で編集してからSNSに投稿いただいて構いません。
+    </div>
+
+    <footer>© おにぎり屋かなたけ</footer>
+  </div>
 </body>
 </html>
