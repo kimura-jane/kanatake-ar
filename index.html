@@ -2,24 +2,89 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>iPhoneで置くAR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+
+  <title>おにぎり屋かなたけ AR</title>
+  <meta name="description" content="QRからすぐにAR体験。iPhoneはUSDZで置くAR、AndroidはWebARで表示できます。" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://kanatake-ar.pages.dev/" />
+
+  <!-- OGP -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="おにぎり屋かなたけ" />
+  <meta property="og:title" content="おにぎり屋かなたけ AR" />
+  <meta property="og:description" content="QRからすぐにAR体験。iPhoneはUSDZで置くAR、AndroidはWebARで表示できます。" />
+  <meta property="og:url" content="https://kanatake-ar.pages.dev/" />
+  <meta property="og:image" content="https://kanatake-ar.pages.dev/ogp_kanatake_1200x630.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- X (Twitter) -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="おにぎり屋かなたけ AR" />
+  <meta name="twitter:description" content="QRからすぐにAR体験。iPhoneはUSDZで置くAR、AndroidはWebARで表示できます。" />
+  <meta name="twitter:image" content="https://kanatake-ar.pages.dev/ogp_kanatake_1200x630.jpg" />
+
   <style>
-    body{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;margin:24px;line-height:1.6}
-    a.btn{display:inline-block;padding:14px 16px;border:1px solid #111;border-radius:12px;text-decoration:none;color:#111}
-    .note{color:#555;font-size:13px;margin-top:12px}
+    body{
+      font-family: system-ui,-apple-system,"Noto Sans JP",sans-serif;
+      margin: 24px;
+      line-height: 1.7;
+      background: #fff;
+      color: #111;
+    }
+    .wrap{max-width:720px;margin:0 auto;}
+    h1{font-size:28px;margin:0 0 8px;}
+    .sub{color:#555;margin:0 0 18px;}
+    .grid{display:grid;gap:12px;grid-template-columns:1fr; margin-top:16px;}
+    a.card{
+      display:block;
+      border:2px solid #111;
+      border-radius:16px;
+      padding:16px;
+      text-decoration:none;
+      color:#111;
+      background:#fff;
+    }
+    a.card:active{transform:scale(0.99);}
+    .title{font-weight:800;font-size:18px;margin:0 0 6px;}
+    .desc{color:#555;font-size:14px;margin:0;}
+    .note{margin-top:18px;color:#666;font-size:13px;}
+    .thumb{margin-top:18px;border-radius:16px;overflow:hidden;border:1px solid #eee;}
+    .thumb img{display:block;width:100%;height:auto;}
   </style>
 </head>
 <body>
-  <h1>iPhoneで置くAR</h1>
-  <p>下のボタンを押すとARが開く。</p>
+  <div class="wrap">
+    <h1>おにぎり屋かなたけ AR</h1>
+    <p class="sub">QRからすぐにAR体験できます。</p>
 
-  <a class="btn" rel="ar" href="./onigiri.usdz">
-    ARで表示する（USDZ）
-  </a>
+    <div class="grid">
+      <a class="card" href="./iphone.html">
+        <div class="title">iPhoneで置くAR（USDZ）</div>
+        <p class="desc">ボタンを押すとARが開きます。</p>
+      </a>
 
-  <p class="note">
-    うまくいかない時：明るい場所で机の上を映してから試して。
-  </p>
+      <a class="card" href="./android.html">
+        <div class="title">Androidで置くAR（WebAR）</div>
+        <p class="desc">ブラウザでAR表示（対応端末のみ）。</p>
+      </a>
+
+      <a class="card" href="./selfie.html">
+        <div class="title">肩に乗る（自撮りAR）</div>
+        <p class="desc">カメラで自撮りして遊べます。</p>
+      </a>
+    </div>
+
+    <div class="thumb">
+      <img src="./ogp_kanatake_1200x630.jpg" alt="おにぎり屋かなたけ AR">
+    </div>
+
+    <p class="note">
+      うまくいかない時：明るい場所で机の上を映してから試して。<br>
+      ※SNSのOGPは反映に時間がかかることがあります（投稿済みは再投稿やURL末尾に ?v=1 などで更新）。
+    </p>
+  </div>
 </body>
 </html>
