@@ -2,28 +2,190 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Androidで置くAR</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Androidで置くAR｜かなたけちゃん</title>
+
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
   <style>
-    body{font-family:system-ui;margin:0}
-    model-viewer{width:100vw;height:100vh;background:#f7f7f7}
-    .hint{position:fixed;left:12px;right:12px;bottom:12px;background:#fff;border:1px solid #ddd;border-radius:12px;padding:10px;font-size:13px}
+    :root{
+      --bg:#fbfaf7;
+      --ink:#1f2328;
+      --sub:rgba(31,35,40,.72);
+      --line:rgba(31,35,40,.12);
+      --card:rgba(255,255,255,.90);
+      --shadow:0 16px 40px rgba(31,35,40,.10);
+      --ume:#e94b5a;
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(12px 12px at 18px 18px, rgba(31,35,40,.035) 0 3px, transparent 3px),
+        radial-gradient(12px 12px at 44px 54px, rgba(31,35,40,.030) 0 3px, transparent 3px),
+        radial-gradient(900px 420px at 15% 0%, rgba(233,75,90,.10), transparent 60%),
+        radial-gradient(900px 420px at 90% 10%, rgba(43,179,166,.08), transparent 55%),
+        var(--bg);
+      background-size:72px 72px,72px 72px,auto,auto,auto;
+      min-height:100vh;
+    }
+    .wrap{max-width:920px;margin:0 auto;padding:22px 16px 26px}
+    h1{margin:0 0 8px;font-size:18px}
+    .sub{margin:0 0 14px;color:var(--sub);font-size:13.5px;line-height:1.9}
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .top{
+      padding:14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line);
+    }
+
+    .btn{
+      appearance:none;
+      border:1px solid rgba(31,35,40,.14);
+      background: rgba(255,255,255,.84);
+      color: rgba(31,35,40,.90);
+      border-radius: 14px;
+      padding: 12px 12px;
+      font-size: 13.2px;
+      font-weight: 900;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+    }
+    .primary{
+      border-color: rgba(233,75,90,.28);
+      background: linear-gradient(135deg, rgba(233,75,90,.96), rgba(233,75,90,.86));
+      color:#fff;
+      box-shadow: 0 14px 26px rgba(233,75,90,.18);
+    }
+    .badge{
+      font-size:12px;
+      color:rgba(31,35,40,.72);
+      background:rgba(233,75,90,.08);
+      border:1px solid rgba(233,75,90,.18);
+      padding:6px 10px;
+      border-radius:999px;
+    }
+
+    model-viewer{
+      width:100%;
+      height: min(70vh, 520px);
+      background: #ffffff;
+    }
+    .note{
+      padding: 12px 14px 16px;
+      color: rgba(31,35,40,.70);
+      font-size: 12.6px;
+      line-height: 1.9;
+      border-top:1px solid var(--line);
+    }
+    a.back{
+      margin-top: 12px;
+      display:inline-block;
+      text-decoration:none;
+      color: rgba(31,35,40,.80);
+      border: 1px solid rgba(31,35,40,.14);
+      background: rgba(255,255,255,.70);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
   </style>
 </head>
-<body>
-  <model-viewer
-    src="./onigiri_plane.gltf"
-    ar
-    ar-modes="scene-viewer webxr quick-look"
-    ar-scale="fixed"
-    camera-controls
-    shadow-intensity="0.3"
-    alt="おにぎりキャラ"
-  ></model-viewer>
 
-  <div class="hint">
-    AR対応なら「AR」ボタンが出る。出ない端末でも3D表示は動く。
+<body>
+  <div class="wrap">
+    <h1>Androidで置くAR</h1>
+    <p class="sub">
+      対応端末では「ARで見る」からカメラARが開きます。<br>
+      非対応の場合は下の3D表示（指で回転）になります。
+    </p>
+
+    <div class="panel">
+      <div class="top">
+        <a id="arLink" class="btn primary" href="#">
+          <span>→</span> ARで見る（対応端末）
+        </a>
+        <span id="status" class="badge">判定中…</span>
+      </div>
+
+      <model-viewer id="mv"
+        src=""
+        alt="かなたけちゃん 3D"
+        camera-controls
+        auto-rotate
+        ar
+        ar-modes="scene-viewer webxr"
+        shadow-intensity="0.6"
+        exposure="1.0">
+      </model-viewer>
+
+      <div class="note">
+        ※ARが出ない場合：Chromeで開く／「Google Play Services for AR」を更新／端末がARCore対応かをご確認ください。  [oai_citation:5‡Google for Developers](https://developers.google.com/ar/develop/webxr/model-viewer?utm_source=chatgpt.com)
+      </div>
+    </div>
+
+    <a class="back" href="./">← トップへ戻る</a>
   </div>
+
+  <script>
+    // ★ここだけ、実際のファイル名に合わせてください（例: 'onigiri.glb'）
+    const MODEL_FILE = 'onigiri.glb';
+
+    const mv = document.getElementById('mv');
+    const arLink = document.getElementById('arLink');
+    const status = document.getElementById('status');
+
+    // 絶対URL化（Scene ViewerはHTTPSのURLが必要）
+    const modelUrl = new URL('./' + MODEL_FILE, location.href).href;
+    mv.src = modelUrl;
+
+    // Scene Viewer intent（AR優先。非対応/未導入なら3Dへフォールバックする挙動）
+    // 仕様：Google公式（Scene Viewer）  [oai_citation:6‡Google for Developers](https://developers.google.com/ar/develop/scene-viewer?utm_source=chatgpt.com)
+    const fallbackUrl = encodeURIComponent(location.href);
+    const fileParam = encodeURIComponent(modelUrl);
+
+    const intent =
+      `intent://arvr.google.com/scene-viewer/1.0?file=${fileParam}&mode=ar_preferred` +
+      `#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;` +
+      `S.browser_fallback_url=${fallbackUrl};end;`;
+
+    arLink.href = intent;
+
+    // model-viewer側でARが起動できるかの目安（対応端末/環境だとtrueになりやすい）
+    // ※完全判定ではありませんが、表示のガイドに使えます。
+    function refreshStatus(){
+      try{
+        const can = mv.canActivateAR;
+        if(can){
+          status.textContent = 'AR対応：ARで見る をお試しください';
+          status.style.background = 'rgba(43,179,166,.10)';
+          status.style.borderColor = 'rgba(43,179,166,.22)';
+        }else{
+          status.textContent = 'AR非対応の可能性：3D表示になります';
+        }
+      }catch{
+        status.textContent = '3D表示（環境によりARは非対応）';
+      }
+    }
+
+    mv.addEventListener('load', refreshStatus);
+    setTimeout(refreshStatus, 800);
+  </script>
 </body>
 </html>
