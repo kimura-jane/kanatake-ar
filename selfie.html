@@ -14,7 +14,6 @@
       --card:rgba(255,255,255,.90);
       --shadow:0 16px 40px rgba(31,35,40,.10);
       --ume:#e94b5a;
-      --mint:#2bb3a6;
       --radius:20px;
     }
     *{box-sizing:border-box}
@@ -60,19 +59,18 @@
       width:100%;
       height:100%;
       object-fit:cover;
-      transform: scaleX(-1); /* 自撮り鏡 */
+      transform: scaleX(-1);
     }
-    /* 背面カメラ時に鏡反転しない */
     video.no-mirror{ transform:none; }
 
     .overlay{
       position:absolute;
       left:50%;
       top:60%;
-      width: 220px;
+      width: 240px;
       height:auto;
       transform: translate(-50%,-50%);
-      touch-action:none; /* ピンチとドラッグを自前で扱う */
+      touch-action:none;
       user-select:none;
       -webkit-user-drag:none;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.35));
@@ -88,9 +86,7 @@
       justify-content:space-between;
     }
 
-    .left, .right{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-    }
+    .left, .right{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
 
     button{
       appearance:none;
@@ -152,14 +148,13 @@
   <div class="wrap">
     <h1>肩に乗る（自撮り）</h1>
     <p class="sub">
-      かなたけちゃんを<strong>ドラッグ</strong>で移動、<strong>ピンチ</strong>で拡大縮小できます。<br>
-      位置が決まったら「撮影」を押してください。
+      画像を<strong>ドラッグ</strong>で移動、<strong>ピンチ</strong>で拡大縮小できます。位置が決まったら「撮影」を押してください。
     </p>
 
     <div class="panel">
       <div class="stage" id="stage">
         <video id="video" autoplay playsinline muted></video>
-        <img id="overlay" class="overlay" src="./onigiriya_kanatake_512.png" alt="かなたけちゃん">
+        <img id="overlay" class="overlay" alt="かなたけちゃん">
       </div>
 
       <div class="hud">
@@ -173,7 +168,7 @@
       </div>
 
       <div class="hint">
-        ※保存がうまくいかない場合は、撮影後に表示される画像を長押しして保存してください。<br>
+        ※保存がうまくいかない場合は、撮影後に表示された画像を長押しして保存してください。<br>
         ※周囲のお客さまが写り込まないようご配慮ください。
       </div>
     </div>
@@ -182,10 +177,14 @@
   </div>
 
   <div class="toast" id="toast">準備中…</div>
-
   <canvas id="canvas" style="display:none"></canvas>
 
   <script>
+    // ★ここだけ：ファイル名を合わせる
+    // リネームできたなら 'kanatake.png'
+    // リネームできてないなら 'kanatake.png.png'
+    const IMG_FILE = 'kanatake.png';
+
     const video = document.getElementById('video');
     const overlay = document.getElementById('overlay');
     const canvas = document.getElementById('canvas');
@@ -195,7 +194,9 @@
     const resetBtn  = document.getElementById('resetBtn');
     const shotBtn   = document.getElementById('shotBtn');
 
-    let facingMode = 'user'; // 'user' or 'environment'
+    overlay.src = './' + IMG_FILE;
+
+    let facingMode = 'user';
     let stream = null;
 
     function showToast(msg){
@@ -220,7 +221,6 @@
 
         video.srcObject = stream;
 
-        // 鏡反転：自撮りだけ
         if(facingMode === 'user'){
           video.classList.remove('no-mirror');
         }else{
@@ -236,36 +236,19 @@
     }
 
     // ---- Overlay transform (drag + pinch) ----
-    let state = {
-      x: 0, y: 0, scale: 1,
-      startX: 0, startY: 0,
-      startScale: 1
-    };
-
+    let state = { x:0, y:0, scale:1 };
     function applyTransform(){
       overlay.style.transform = `translate(-50%,-50%) translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
     }
-
     function resetOverlay(){
-      state.x = 0;
-      state.y = 0;
-      state.scale = 1;
+      state.x = 0; state.y = 0; state.scale = 1;
       applyTransform();
       showToast('リセットしました');
     }
 
-    // Pointer tracking for pinch
     const pointers = new Map();
-
-    function getDistance(a,b){
-      const dx = a.x - b.x;
-      const dy = a.y - b.y;
-      return Math.hypot(dx,dy);
-    }
-
-    function getMidpoint(a,b){
-      return { x: (a.x+b.x)/2, y: (a.y+b.y)/2 };
-    }
+    function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+    function mid(a,b){ return { x:(a.x+b.x)/2, y:(a.y+b.y)/2 }; }
 
     let pinchStartDist = 0;
     let pinchStartScale = 1;
@@ -277,13 +260,12 @@
       pointers.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
 
       if(pointers.size === 1){
-        // drag start
         dragStart = { x: ev.clientX, y: ev.clientY, ox: state.x, oy: state.y };
       }else if(pointers.size === 2){
         const pts = [...pointers.values()];
-        pinchStartDist = getDistance(pts[0], pts[1]);
+        pinchStartDist = dist(pts[0], pts[1]);
         pinchStartScale = state.scale;
-        pinchStartMid = getMidpoint(pts[0], pts[1]);
+        pinchStartMid = mid(pts[0], pts[1]);
       }
     });
 
@@ -298,18 +280,16 @@
         applyTransform();
       }else if(pointers.size === 2){
         const pts = [...pointers.values()];
-        const dist = getDistance(pts[0], pts[1]);
-        const mid = getMidpoint(pts[0], pts[1]);
+        const d = dist(pts[0], pts[1]);
+        const m = mid(pts[0], pts[1]);
 
-        const scale = pinchStartScale * (dist / pinchStartDist);
-        // clamp
-        state.scale = Math.max(0.35, Math.min(2.6, scale));
+        const s = pinchStartScale * (d / pinchStartDist);
+        state.scale = Math.max(0.35, Math.min(2.8, s));
 
-        // 2本指の中心が動いた分も平行移動
         if(pinchStartMid){
-          state.x += (mid.x - pinchStartMid.x);
-          state.y += (mid.y - pinchStartMid.y);
-          pinchStartMid = mid;
+          state.x += (m.x - pinchStartMid.x);
+          state.y += (m.y - pinchStartMid.y);
+          pinchStartMid = m;
         }
         applyTransform();
       }
@@ -317,44 +297,28 @@
 
     function endPointer(ev){
       pointers.delete(ev.pointerId);
-      if(pointers.size < 2){
-        pinchStartMid = null;
-      }
-      if(pointers.size === 0){
-        dragStart = null;
-      }else if(pointers.size === 1){
+      if(pointers.size < 2) pinchStartMid = null;
+      if(pointers.size === 0) dragStart = null;
+      if(pointers.size === 1){
         const p = [...pointers.values()][0];
         dragStart = { x: p.x, y: p.y, ox: state.x, oy: state.y };
       }
     }
-
     overlay.addEventListener('pointerup', endPointer);
     overlay.addEventListener('pointercancel', endPointer);
     overlay.addEventListener('lostpointercapture', endPointer);
 
     // ---- Capture ----
-    function getVideoSize(){
-      const vw = video.videoWidth;
-      const vh = video.videoHeight;
-      return { vw, vh };
-    }
-
     function drawCover(ctx, img, dx, dy, dw, dh){
-      // draw image "cover" into dw×dh
-      const iw = img.width, ih = img.height;
+      const iw = img.videoWidth || img.width;
+      const ih = img.videoHeight || img.height;
       const ir = iw / ih;
       const dr = dw / dh;
       let sw, sh, sx, sy;
       if(ir > dr){
-        sh = ih;
-        sw = ih * dr;
-        sx = (iw - sw) / 2;
-        sy = 0;
+        sh = ih; sw = ih * dr; sx = (iw - sw) / 2; sy = 0;
       }else{
-        sw = iw;
-        sh = iw / dr;
-        sx = 0;
-        sy = (ih - sh) / 2;
+        sw = iw; sh = iw / dr; sx = 0; sy = (ih - sh) / 2;
       }
       ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
     }
@@ -365,7 +329,6 @@
         return;
       }
 
-      // canvas size = stage display size * devicePixelRatio
       const stage = document.getElementById('stage');
       const rect = stage.getBoundingClientRect();
       const dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -375,8 +338,7 @@
 
       const ctx = canvas.getContext('2d');
 
-      // video draw (cover into stage)
-      // For user camera, we mirror to match what user sees.
+      // video (mirror for user cam)
       ctx.save();
       if(facingMode === 'user'){
         ctx.translate(canvas.width, 0);
@@ -385,8 +347,7 @@
       drawCover(ctx, video, 0, 0, canvas.width, canvas.height);
       ctx.restore();
 
-      // overlay draw at its on-screen position
-      // Compute overlay center position relative to stage
+      // overlay
       const orect = overlay.getBoundingClientRect();
       const srect = stage.getBoundingClientRect();
 
@@ -395,12 +356,9 @@
       const ow = orect.width * dpr;
       const oh = orect.height * dpr;
 
-      // ensure overlay image is loaded
       await overlay.decode?.().catch(()=>{});
-
       ctx.drawImage(overlay, ox, oy, ow, oh);
 
-      // export
       const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 1.0));
       if(!blob){
         showToast('撮影に失敗しました');
@@ -409,18 +367,14 @@
 
       const file = new File([blob], 'kanatake_selfie.png', { type: 'image/png' });
 
-      // iOS Safari: share sheet if possible
       if(navigator.canShare && navigator.canShare({ files: [file] })){
         try{
           await navigator.share({ files: [file], title: 'かなたけちゃんAR' });
           showToast('共有を開きました');
           return;
-        }catch(e){
-          // user cancelled
-        }
+        }catch(e){}
       }
 
-      // fallback: open image in new tab (long press save) + download link
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -429,13 +383,11 @@
       a.click();
       a.remove();
 
-      // also show in new tab for iOS (download might not work)
       window.open(url, '_blank', 'noopener,noreferrer');
       showToast('画像を保存してください');
       setTimeout(()=>URL.revokeObjectURL(url), 8000);
     });
 
-    // Buttons
     switchBtn.addEventListener('click', async ()=>{
       facingMode = (facingMode === 'user') ? 'environment' : 'user';
       await startCamera();
@@ -443,7 +395,6 @@
     });
     resetBtn.addEventListener('click', resetOverlay);
 
-    // Init
     resetOverlay();
     startCamera();
   </script>
