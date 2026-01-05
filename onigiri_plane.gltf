@@ -25,8 +25,15 @@
     }
   ],
   "textures": [{ "sampler": 0, "source": 0 }],
-  "images": [{ "uri": "onigiriya_kanatake_512.png" }],
-  "samplers": [{ "magFilter": 9729, "minFilter": 9729, "wrapS": 10497, "wrapT": 10497 }],
+  "images": [
+    {
+      "uri": "https://kanatake-ar.pages.dev/onigiriya_kanatake_512.png",
+      "mimeType": "image/png"
+    }
+  ],
+  "samplers": [
+    { "magFilter": 9729, "minFilter": 9729, "wrapS": 10497, "wrapT": 10497 }
+  ],
   "buffers": [
     {
       "uri": "data:application/octet-stream;base64,mpkZvgAAAAAAAAAAmpkZPgAAAAAAAAAAmpkZPpqZmT4AAAAAmpkZvpqZmT4AAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAEAAgAAAAIAAwA=",
