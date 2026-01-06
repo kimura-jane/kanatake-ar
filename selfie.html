@@ -4,18 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>かなたけちゃんと一緒に撮ろう（自撮り）</title>
-  <meta name="description" content="カメラで撮影して、かなたけちゃんと一緒に1枚。位置とサイズも調整できます。" />
+  <meta name="description" content="かなたけちゃんと一緒に自撮り。ドラッグで移動、ピンチでサイズ調整。撮影して保存/共有できます。" />
+
   <style>
     :root{
       --bg:#0b0b10;
-      --panel: rgba(255,255,255,.08);
-      --line: rgba(255,255,255,.16);
+      --panel: rgba(0,0,0,.45);
+      --line: rgba(255,255,255,.18);
       --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
+      --muted: rgba(255,255,255,.72);
       --accent:#ff5a73;
-      --radius: 16px;
+      --accent2:#ff7a8f;
+      --radius: 14px;
     }
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box; }
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
@@ -23,74 +25,82 @@
       color: var(--text);
       overflow:hidden;
     }
-    header{
+
+    .stage{
+      position:fixed;
+      inset:0;
+      background:#000;
+    }
+    video, canvas{
+      width:100vw;
+      height:100vh;
+      object-fit:cover;
+      display:block;
+    }
+    #overlay{
+      position:absolute;
+      inset:0;
+      touch-action:none;
+    }
+
+    /* top bar */
+    .topbar{
       position:fixed;
       top:0; left:0; right:0;
-      padding: 12px 12px 10px;
+      padding: 10px 10px 10px;
       display:flex;
-      justify-content:space-between;
       align-items:center;
+      justify-content:space-between;
       gap:10px;
       z-index:10;
       background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0));
     }
     .title{
       font-weight:900;
-      font-size: 14px;
       letter-spacing:.02em;
+      font-size: 14px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 48vw;
+    }
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
     .btn{
+      appearance:none;
       border:1px solid var(--line);
-      background: var(--panel);
+      background: rgba(255,255,255,.10);
       color: var(--text);
       padding: 10px 12px;
       border-radius: 999px;
       font-weight:800;
-      text-decoration:none;
+      font-size: 13px;
+      line-height:1;
       -webkit-tap-highlight-color: transparent;
     }
     .btn.primary{
       border:none;
-      background: linear-gradient(135deg, var(--accent), #ff7a8f);
-      color:white;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 12px 26px rgba(255,90,115,.28);
+      color:#fff;
+    }
+    .btn.icon{
+      width:40px;
+      padding: 10px 0;
+      text-align:center;
+      font-weight:900;
     }
 
-    .stage{
-      position:fixed;
-      inset:0;
-      display:grid;
-      place-items:center;
-    }
-    video, canvas{
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      background:#000;
-    }
-    #captureCanvas{ display:none; }
-
-    .hint{
-      position: fixed;
-      left: 12px; right: 12px;
-      bottom: 12px;
-      background: rgba(0,0,0,.45);
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: var(--radius);
-      padding: 10px 12px;
-      font-size: 12.5px;
-      line-height: 1.6;
-      color: var(--muted);
-      z-index: 10;
-      backdrop-filter: blur(8px);
-    }
-    .hint b{ color: var(--text); }
-
+    /* toast */
     .toast{
       position:fixed;
       left:50%;
       top:58px;
       transform:translateX(-50%);
-      background: rgba(0,0,0,.65);
+      background: rgba(0,0,0,.72);
       border:1px solid rgba(255,255,255,.18);
       color: rgba(255,255,255,.92);
       padding: 10px 12px;
@@ -98,28 +108,113 @@
       font-size: 12px;
       display:none;
       z-index: 20;
+      backdrop-filter: blur(8px);
+      max-width: 92vw;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* info modal */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      z-index:30;
+      background: rgba(0,0,0,.48);
+      backdrop-filter: blur(8px);
+      align-items:flex-end;
+      justify-content:center;
+      padding: 14px;
+    }
+    .modal .sheet{
+      width:min(720px, 100%);
+      background: rgba(255,255,255,.92);
+      color:#111;
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.25);
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .modal h2{
+      margin:0 0 8px;
+      font-size: 16px;
+      font-weight:900;
+    }
+    .modal p{
+      margin:0;
+      font-size: 13.5px;
+      line-height: 1.75;
+      color:#333;
+    }
+    .modal .closeRow{
+      display:flex;
+      justify-content:flex-end;
+      margin-top: 10px;
+    }
+    .modal .closeBtn{
+      border:none;
+      background: #111;
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight:900;
+      font-size: 13px;
+    }
+
+    /* small helper hint (not blocking) */
+    .cornerHint{
+      position:fixed;
+      right:10px;
+      bottom:10px;
+      background: rgba(0,0,0,.40);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.85);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      z-index: 12;
+      backdrop-filter: blur(8px);
     }
   </style>
 </head>
-<body>
-  <header>
-    <a class="btn" href="./index.html">← トップへ戻る</a>
-    <div class="title">かなたけちゃんと一緒に撮ろう（自撮り）</div>
-    <button class="btn primary" id="shotBtn">撮影して保存</button>
-  </header>
 
+<body>
   <div class="stage">
     <video id="video" playsinline autoplay muted></video>
     <canvas id="overlay"></canvas>
-    <canvas id="captureCanvas"></canvas>
+  </div>
+
+  <div class="topbar">
+    <button class="btn" id="backBtn" type="button">← トップ</button>
+    <div class="title">かなたけちゃんと一緒に撮ろう（自撮り）</div>
+    <div class="controls">
+      <button class="btn icon" id="infoBtn" type="button" aria-label="使い方">i</button>
+      <button class="btn" id="flipBtn" type="button">カメラ切替</button>
+      <button class="btn primary" id="shotBtn" type="button">撮影</button>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <div class="hint">
-    <b>使い方：</b> かなたけちゃんは <b>ドラッグで移動</b>、<b>ピンチで拡大・縮小</b> できます。<br>
-    <b>SNS投稿歓迎：</b> 顔出しNGの方は、あとからモザイク等で<b>編集してOK</b>です。周囲のお客様が写り込まないようご配慮ください。
+  <div class="cornerHint">ドラッグ移動 / ピンチ拡大・縮小</div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <h2>操作とお願い</h2>
+      <p>
+        ・指でドラッグして移動、2本指で拡大・縮小できます。<br>
+        ・写真を撮ったら、よろしければSNSで共有してください。<br>
+        ・周囲のお客様が写り込まないようご配慮ください。<br>
+        ・顔出しNGの方は、スタンプ・ぼかし等で編集していただいて大丈夫です。
+      </p>
+      <div class="closeRow">
+        <button class="closeBtn" id="closeBtn" type="button">閉じる</button>
+      </div>
+    </div>
   </div>
+
+  <canvas id="captureCanvas" style="display:none"></canvas>
 
   <script>
     const video = document.getElementById('video');
@@ -127,20 +222,30 @@
     const ctx = overlay.getContext('2d');
     const captureCanvas = document.getElementById('captureCanvas');
     const cctx = captureCanvas.getContext('2d');
+
+    const backBtn = document.getElementById('backBtn');
+    const infoBtn = document.getElementById('infoBtn');
+    const flipBtn = document.getElementById('flipBtn');
     const shotBtn = document.getElementById('shotBtn');
+
     const toast = document.getElementById('toast');
+    const modal = document.getElementById('modal');
+    const closeBtn = document.getElementById('closeBtn');
+
+    let stream = null;
+    let facingMode = 'user'; // 'user' or 'environment'
 
     const sticker = new Image();
     sticker.src = './kanatake.png';
 
     // ステッカー状態
-    let st = {
+    const st = {
       x: 0, y: 0,
-      scale: 0.55,   // 初期サイズ
-      w: 0, h: 0
+      scale: 0.55,
+      w: 1024, h: 1024
     };
 
-    // 2点タッチ用
+    // pointer tracking
     const pointers = new Map();
     let startDist = null;
     let startScale = null;
@@ -154,32 +259,37 @@
       showToast._t = setTimeout(()=> toast.style.display='none', 1600);
     }
 
+    function stopStream(){
+      if(stream){
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+    }
+
     async function startCamera(){
+      stopStream();
       try{
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" },
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode },
           audio: false
         });
         video.srcObject = stream;
       }catch(e){
-        showToast('カメラを起動できませんでした。権限をご確認ください。');
         console.error(e);
+        showToast('カメラを起動できませんでした。権限をご確認ください。');
       }
     }
 
     function resize(){
-      overlay.width = window.innerWidth * devicePixelRatio;
-      overlay.height = window.innerHeight * devicePixelRatio;
+      const dpr = window.devicePixelRatio || 1;
+      overlay.width = Math.floor(window.innerWidth * dpr);
+      overlay.height = Math.floor(window.innerHeight * dpr);
       overlay.style.width = window.innerWidth + 'px';
       overlay.style.height = window.innerHeight + 'px';
 
-      // ステッカーの実寸（画像サイズ基準）
-      st.w = sticker.naturalWidth || 1024;
-      st.h = sticker.naturalHeight || 1024;
-
       // 初期位置：中央やや下
       st.x = overlay.width * 0.5;
-      st.y = overlay.height * 0.55;
+      st.y = overlay.height * 0.58;
 
       draw();
     }
@@ -187,9 +297,9 @@
     function draw(){
       ctx.clearRect(0,0,overlay.width, overlay.height);
 
-      // ステッカー描画
-      const drawW = st.w * st.scale * devicePixelRatio * 0.55;
-      const drawH = st.h * st.scale * devicePixelRatio * 0.55;
+      const dpr = window.devicePixelRatio || 1;
+      const drawW = st.w * st.scale * dpr * 0.55;
+      const drawH = st.h * st.scale * dpr * 0.55;
 
       ctx.save();
       ctx.translate(st.x, st.y);
@@ -197,21 +307,22 @@
       ctx.restore();
     }
 
+    function canvasPoint(e){
+      const rect = overlay.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      return {
+        x: (e.clientX - rect.left) * dpr,
+        y: (e.clientY - rect.top) * dpr
+      };
+    }
+
     function dist(a,b){
       const dx = a.x - b.x;
       const dy = a.y - b.y;
       return Math.hypot(dx,dy);
     }
-
     function center(a,b){
-      return { x: (a.x+b.x)/2, y:(a.y+b.y)/2 };
-    }
-
-    function canvasPoint(e){
-      const rect = overlay.getBoundingClientRect();
-      const x = (e.clientX - rect.left) * devicePixelRatio;
-      const y = (e.clientY - rect.top) * devicePixelRatio;
-      return { x, y };
+      return { x:(a.x+b.x)/2, y:(a.y+b.y)/2 };
     }
 
     overlay.addEventListener('pointerdown', (e)=>{
@@ -236,7 +347,6 @@
 
       if(pointers.size === 1){
         const p = [...pointers.values()][0];
-        // 移動：ポインタへ追従（自然に）
         st.x = p.x;
         st.y = p.y;
         draw();
@@ -247,9 +357,8 @@
         const c = center(p1,p2);
 
         const ratio = d / (startDist || d);
-        st.scale = Math.max(0.15, Math.min(1.6, (startScale || st.scale) * ratio));
+        st.scale = Math.max(0.12, Math.min(1.8, (startScale || st.scale) * ratio));
 
-        // 中心に合わせて移動
         st.x = (startPos?.x ?? st.x) + (c.x - (startCenter?.x ?? c.x));
         st.y = (startPos?.y ?? st.y) + (c.y - (startCenter?.y ?? c.y));
         draw();
@@ -265,41 +374,45 @@
     overlay.addEventListener('pointerup', endPointer);
     overlay.addEventListener('pointercancel', endPointer);
 
-    // 撮影：videoフレーム + ステッカー合成 → 画像保存/共有
-    shotBtn.addEventListener('click', async ()=>{
-      if(!video.videoWidth){
+    async function capture(){
+      if(!video.videoWidth || !video.videoHeight){
         showToast('カメラ準備中です。少し待ってからお試しください。');
         return;
       }
-      const w = video.videoWidth;
-      const h = video.videoHeight;
 
-      captureCanvas.width = w;
-      captureCanvas.height = h;
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
 
-      // videoをそのまま描画
-      cctx.drawImage(video, 0, 0, w, h);
+      captureCanvas.width = vw;
+      captureCanvas.height = vh;
 
-      // ステッカー座標を video サイズへ変換
-      const sx = st.x / overlay.width * w;
-      const sy = st.y / overlay.height * h;
+      // video フレーム描画
+      cctx.drawImage(video, 0, 0, vw, vh);
 
-      const baseW = (st.w || 1024) * st.scale * 0.55;
-      const baseH = (st.h || 1024) * st.scale * 0.55;
+      // overlay座標 → video座標に変換
+      const sx = (st.x / overlay.width) * vw;
+      const sy = (st.y / overlay.height) * vh;
 
-      // overlay基準のサイズ → video基準へ
-      const drawW = baseW / overlay.width * w * devicePixelRatio;
-      const drawH = baseH / overlay.height * h * devicePixelRatio;
+      // overlay上での描画サイズを video に合わせる
+      const dpr = window.devicePixelRatio || 1;
+      const drawW_overlay = st.w * st.scale * dpr * 0.55;
+      const drawH_overlay = st.h * st.scale * dpr * 0.55;
+
+      const drawW = (drawW_overlay / overlay.width) * vw;
+      const drawH = (drawH_overlay / overlay.height) * vh;
 
       cctx.drawImage(sticker, sx - drawW/2, sy - drawH/2, drawW, drawH);
 
       captureCanvas.toBlob(async (blob)=>{
-        if(!blob){ showToast('保存に失敗しました。'); return; }
+        if(!blob){
+          showToast('保存に失敗しました。');
+          return;
+        }
 
-        const file = new File([blob], 'kanatake_selfie.png', { type: 'image/png' });
+        const file = new File([blob], 'kanatake_selfie.png', { type:'image/png' });
 
-        // Web Share（対応端末）
-        if(navigator.canShare && navigator.canShare({ files: [file] })){
+        // 共有（対応端末）
+        if(navigator.canShare && navigator.canShare({ files:[file] })){
           try{
             await navigator.share({
               title: 'かなたけちゃんAR',
@@ -309,11 +422,11 @@
             showToast('共有しました。');
             return;
           }catch(e){
-            // キャンセル等
+            // キャンセル等は無視
           }
         }
 
-        // 非対応ならダウンロード
+        // 非対応はダウンロード
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -324,9 +437,25 @@
         URL.revokeObjectURL(url);
         showToast('画像を保存しました。');
       }, 'image/png', 1.0);
+    }
+
+    // UI handlers
+    backBtn.addEventListener('click', ()=> location.href = './index.html?v=2');
+    infoBtn.addEventListener('click', ()=> modal.style.display = 'flex');
+    closeBtn.addEventListener('click', ()=> modal.style.display = 'none');
+    modal.addEventListener('click', (e)=>{ if(e.target === modal) modal.style.display = 'none'; });
+
+    flipBtn.addEventListener('click', async ()=>{
+      facingMode = (facingMode === 'user') ? 'environment' : 'user';
+      await startCamera();
+      showToast('カメラを切り替えました。');
     });
 
+    shotBtn.addEventListener('click', capture);
+
     sticker.onload = ()=>{
+      st.w = sticker.naturalWidth || 1024;
+      st.h = sticker.naturalHeight || 1024;
       resize();
       startCamera();
       showToast('ドラッグで移動、ピンチでサイズ調整できます。');
